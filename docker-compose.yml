@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - 5000:5000
+    volumes:
+      # - back:/app
+      - ./backend:/app
+    command: uvicorn src.main:app --reload --host 0.0.0.0 --port 5000
+
+  frontend:
+    build: ./frontend
+    volumes:
+      # - front:/app 
+      - './frontend:/app'
+      # - '/app/node_modules' - тупо лишнее. В самом конте он висит. И с ПРАВИЛЬНЫМ портом
+    ports:
+      - 8080:8080
+
+volumes:
+  front:
+  back:
+
+# volumes:
+#   front:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: ./frontend
+#   back:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: ./backend
