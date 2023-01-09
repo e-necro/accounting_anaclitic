@@ -25,7 +25,7 @@ const actions = {
         .then(response => {
           console.log('response ', response)
           context.commit('registerSuccess'.response.data.user) ///TODO: с этим возвратом разобраться, т.е. отдать в нужном виде!!!!
-          resolve(response.data.user)
+          resolve(response.data.user) /// возвращает этого юзера туда, где вызвано был метод (/views/Register.vue в данном случае)
         })
         .catch(result => {
           context.commit('registerFailure', result.response.data.errors) ///TODO: та же лаза с данными
