@@ -1,6 +1,6 @@
 from typing import Dict
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from pydantic import BaseModel
@@ -35,14 +35,29 @@ async def home():
   # return "Hello, World!!!!"
 
 class UserReg(BaseModel):
+  '''
+    {
+      email,
+      username,
+      password
+    }
+  '''
   user: Dict
 
-@app.post("/register")
-async def register(userData: UserReg):
+@app.post("/register", status_code = 200)
+async def register(userData: UserReg, response: Response):
   # TODO: сгенерить токен, добавить юзера и токен к нему, вернуть данные
+  # if ()
   userData.user['_id'] = 'userId'
   userData.user["token"] = 'token example'
   return userData
+  response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
+  errors = { 'errors': {
+      'e1':'11',
+      'e2':'22'
+    }
+  }
+  return errors
   #request: Request
   # request.data.user.token = 'token example'
 

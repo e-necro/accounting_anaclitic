@@ -9,10 +9,10 @@
             <!-- <router-link :to="{name: 'login'}">Have an account?</router-link> -->
           </p>
 
-          <!-- <mcv-validation-errors 
+          <mcv-validation-errors 
             v-if="validationErrors" 
             :validation-errors = "validationErrors" 
-          /> -->
+          />
 
           <form @submit.prevent="onSubmit" >
             <fieldset >
@@ -23,18 +23,37 @@
                   type="text" 
                   placeholder="Username"
                   v-model="username" 
+                  required="required"
                 >
               </fieldset>
 
               <fieldset class="form-group">
-                <input class="form-control form-control-lg " type="email" placeholder="Email" 
+                <input 
+                  class="form-control form-control-lg " 
+                  type="email" 
+                  placeholder="Email" 
                   v-model="email" 
+                  required="required"
                 >
               </fieldset>
 
               <fieldset class="form-group">
-                <input class="form-control form-control-lg " type="password" placeholder="Password"
+                <input 
+                  class="form-control form-control-lg " 
+                  type="password" 
+                  placeholder="Password"
                   v-model="password"   
+                  required="required"
+                >
+              </fieldset>
+
+              <fieldset class="form-group">
+                <input 
+                  class="form-control form-control-lg " 
+                  type="password" 
+                  placeholder="Password again"
+                  v-model="passwordCheck"   
+                  required="required"
                 >
               </fieldset>
 
@@ -56,7 +75,7 @@
 
 <script>
 
-// import McvValidationErrors from '@/components/ValidationErrors'
+import McvValidationErrors from '@/components/ValidationErrors'
 // import { actionTypes } from '@/store/modules/auth'
 
 export default ({
@@ -65,11 +84,12 @@ export default ({
     return {
       email: '',
       password: '',
+      passwordCheck: '',
       username: ''
     }
   },
   components: {
-    // McvValidationErrors,
+    McvValidationErrors,
   },
   computed: {
     // не стал mapState импортить как в логине
@@ -77,24 +97,27 @@ export default ({
       return this.$store.state.auth.isSubmitting
     },
     validationErrors() {
-      return false
-      // return this.$store.state.auth.validationErrors
+      return this.$store.state.auth.validationErrors
     }
   },
   methods: {
     onSubmit() {
       // this.$store.commit('registerStart')
       ///actionTypes.register
-      this.$store.dispatch('register', 
-        {
-          email: this.email, 
-          username: this.username, 
-          password: this.password
-        }).then(user => {
-          console.log('succesfully register user ', user)
-          this.$router.push({name: 'home'})
-        })
-    }
+      if (this.password !== this.passwordCheck) {
+        this.$store.commit('registerFailure', {passwords: " not match"})
+      } else {
+          this.$store.dispatch('register', 
+          {
+            email: this.email, 
+            username: this.username, 
+            password: this.password
+          }).then(user => {
+            console.log('succesfully register user ', user)
+            this.$router.push({name: 'home'})
+          })
+        }
+      }
   }
 })
 </script>

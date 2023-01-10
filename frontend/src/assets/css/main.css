@@ -5127,7 +5127,11 @@ footer {
 
 .error-messages {
   color: #B85C5C !important;
-  font-weight: bold; }
+  font-weight: bold; 
+}
+.error-messages li {
+  text-align: left;
+}
 
 .banner {
   color: #fff;
