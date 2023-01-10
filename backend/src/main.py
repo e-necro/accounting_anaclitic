@@ -1,3 +1,5 @@
+from typing import Dict
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import json
@@ -32,7 +34,17 @@ async def home():
       return e
   # return "Hello, World!!!!"
 
+class UserReg(BaseModel):
+  user: Dict
 
 @app.post("/register")
-async def register(request: Request):
-  return await request.json()
+async def register(userData: UserReg):
+  # TODO: сгенерить токен, добавить юзера и токен к нему, вернуть данные
+  userData.user['_id'] = 'userId'
+  userData.user["token"] = 'token example'
+  return userData
+  #request: Request
+  # request.data.user.token = 'token example'
+
+    
+  # return await request.json()

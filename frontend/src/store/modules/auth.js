@@ -1,4 +1,5 @@
 import authApi from '@/api/auth'
+import {setItem} from '@/helpers/persistanceStorage'
 
 const state = {
   isSubmitting: false,
@@ -29,8 +30,9 @@ const actions = {
       context.commit('registerStart')
       authApi.register(credentials)
         .then(response => {
-          console.log('response ', response)
-          context.commit('registerSuccess'.response.data.user) ///TODO: с этим возвратом разобраться, т.е. отдать в нужном виде!!!!
+          // console.log('response ', response)
+          context.commit('registerSuccess', response.data.user) ///TODO: с этим возвратом разобраться, т.е. отдать в нужном виде!!!!
+          setItem('accessToken', response.data.user.token)
           resolve(response.data.user) /// возвращает этого юзера туда, где вызвано был метод (/views/Register.vue в данном случае)
         })
         .catch(result => {
