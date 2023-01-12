@@ -77,6 +77,7 @@
 
 import McvValidationErrors from '@/components/ValidationErrors'
 // import { actionTypes } from '@/store/modules/auth'
+import md5 from "blueimp-md5"
 
 export default ({
   name: 'McvRegister',
@@ -104,6 +105,8 @@ export default ({
     onSubmit() {
       // this.$store.commit('registerStart')
       ///actionTypes.register
+      // в md5 пароль загнать
+      let pass = md5(this.password + '140' + this.email + '+++')
       if (this.password !== this.passwordCheck) {
         this.$store.commit('registerFailure', {passwords: " not match"})
       } else {
@@ -111,10 +114,10 @@ export default ({
           {
             email: this.email, 
             username: this.username, 
-            password: this.password
+            password: pass
           }).then(user => {
             console.log('succesfully register user ', user)
-            this.$router.push({name: 'home'})
+            // this.$router.push({name: 'home'})
           })
         }
       }

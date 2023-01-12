@@ -11,6 +11,6 @@ COPY package-lock.json .
 RUN npm install
 # vue-cli-service без fix не заводится у меня(
 RUN npm audit fix 
-RUN npm install bootstrap axios
+RUN npm install bootstrap axios 
 
 CMD ["npm", "run", "serve"]

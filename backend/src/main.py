@@ -8,6 +8,8 @@ from mysql.connector import Error
 
 from .MysqlConnect import MysqlConnect
 
+from .lib.checker import  *
+
 app = FastAPI()
 
 app.add_middleware(
@@ -47,17 +49,47 @@ class UserReg(BaseModel):
 @app.post("/register", status_code = 200)
 async def register(userData: UserReg, response: Response):
   # TODO: сгенерить токен, добавить юзера и токен к нему, вернуть данные
-  # if ()
-  userData.user['_id'] = 'userId'
-  userData.user["token"] = 'token example'
-  return userData
-  response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
-  errors = { 'errors': {
-      'e1':'11',
-      'e2':'22'
-    }
-  }
-  return errors
+  res = checkRegister(userData)
+  if (res[0] == True):
+    #зарегать юзера и вернуть данные и токен
+    try:
+      connection = MysqlConnect.connectDb()  
+      mycursor = connection.cursor(dictionary=True)
+      mycursor.execute("SELECT _id FROM users WHERE email = %s", (userData.user['email'],) )
+      res = mycursor.fetchall()
+      if (len(res) != 0):
+        return RequestError(response, {'MySQL', 'User already registered'})
+
+      mycursor.execute(
+        'INSERT INTO users (name, email, password) VALUES (%s, %s, %s)',
+        (userData.user['username'], userData.user['email'], userData.user['password'])
+      )
+      connection.commit()
+      _id = connection.lastrowid
+      connection.close()
+      return _id
+        
+    except Error as e:
+        response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
+        errors = { 'errors': {
+            'MySQL': e #  выдает Object object ... wtf?
+          }
+        }
+        return errors
+
+
+    userData.user['_id'] = 'userId'
+    userData.user["token"] = 'token example'
+    return userData
+  else:
+    # ошибочка
+    return RequestError(response, res[1])
+    # response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
+    # errors = { 'errors': {
+    #     res[1]
+    #   }
+    # }
+    # return errors
   #request: Request
   # request.data.user.token = 'token example'
 
