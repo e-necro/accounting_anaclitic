@@ -76,7 +76,7 @@
 <script>
 
 import McvValidationErrors from '@/components/ValidationErrors'
-// import { actionTypes } from '@/store/modules/auth'
+import { actionTypes } from '@/store/modules/auth'
 import md5 from "blueimp-md5"
 
 export default ({
@@ -110,7 +110,7 @@ export default ({
       if (this.password !== this.passwordCheck) {
         this.$store.commit('registerFailure', {passwords: " not match"})
       } else {
-          this.$store.dispatch('register', 
+          this.$store.dispatch(actionTypes.register, 
           {
             email: this.email, 
             username: this.username, 

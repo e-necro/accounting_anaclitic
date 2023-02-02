@@ -13,7 +13,7 @@ class Token(BaseModel):
 
 def create_access_token(userData):
     to_encode = {
-        'username': userData.user['username'],
+        'email': userData.user['email'],
         'password': userData.user['password']
     }
      

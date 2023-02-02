@@ -85,3 +85,8 @@ async def register(userData: UserReg, response: Response):
 
     
   # return await request.json()
+
+
+@app.post("/login", status_code = 200)
+async def login(userData: UserReg, response: Response):
+  return 'login'
