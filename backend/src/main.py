@@ -1,57 +1,13 @@
-from typing import Dict
-
 from fastapi import FastAPI, Request, Response, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import json
-from jose import JWTError, jwt
-from pydantic import BaseModel
-from datetime import datetime, timedelta
 from mysql.connector import Error
 
 from .MysqlConnect import MysqlConnect
 
 from .lib.checker import  *
-
-
-SECRET_KEY = '3b5fa82a13bdb6c1ed725fcb9e3d20123c48d4889ec41139bcfe3e766c78a5c1'
-ALGORITHM = "HS256"
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class UserReg(BaseModel):
-  '''
-    {
-      email,
-      username,
-      password
-    }
-  '''
-  user: Dict
-
-class UserLogin(BaseModel):
-  '''
-    {
-      username,
-      password
-    }
-  '''
-  user: Dict
-
-def create_access_token(userData):
-    to_encode = {
-        'username': userData.user['username'],
-        'password': userData.user['password']
-    }
-     
-    # expire time of the token
-    expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-     
-    return encoded_jwt
-
-
+from .lib.user import UserReg, UserLogin
+from .lib.token import *
 
 
 app = FastAPI()
@@ -78,7 +34,7 @@ async def home():
       
   except Error as e:
       return e
-  # return "Hello, World!!!!"
+      
 
 @app.post("/register", status_code = 200)
 async def register(userData: UserReg, response: Response):
