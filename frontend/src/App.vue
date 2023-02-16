@@ -1,4 +1,5 @@
 <template>
+  <mcv-topbar/>
     <router-view/>
 </template>
 
@@ -12,3 +13,16 @@
 }
 
 </style>
+
+<script>
+
+import McvTopbar from '@/components/Topbar'
+
+export default {
+  name: 'McvApp',
+  components: {
+    McvTopbar,
+  },
+  
+}
+</script>
