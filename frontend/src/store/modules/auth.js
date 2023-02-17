@@ -23,6 +23,24 @@ export const actionTypes = {
   login: '[auth] login',
 }
 
+export const getterTypes = {
+  currentUser: '[auth] currentUser',
+  isLoggedIn: '[auth] isLoggedIn',
+  isAnonymos: '[auth] isAnonymmous',
+}
+
+const getters = {
+  [getterTypes.currentUser]: state => {
+    return  state.currentUser
+  },
+  [getterTypes.isLoggedIn]: state => {
+    return Boolean(state.isLoggedIn)
+  },
+  [getterTypes.isAnonymos]: state => {
+    return state.isLoggedIn === false
+  }
+}
+
 
 const mutations = {
   [mutationTypes.registerStart](state) {
@@ -91,5 +109,6 @@ const actions = {
 export default {
   state,
   mutations,
-  actions
+  actions,
+  getters
 }

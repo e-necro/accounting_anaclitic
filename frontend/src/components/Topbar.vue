@@ -48,15 +48,29 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-
+  import {mapGetters} from 'vuex'
+  import { getterTypes } from '@/store/modules/auth';
   export default {
     name: 'McvTopbar',
     computed: {
-      ...mapState({
-        currentUser: state => state.auth.currentUser,
-        isLoggedIn: state => state.auth.isLoggedIn
+      ...mapGetters({
+        currentUser: getterTypes.currentUser,
+        isLoggedIn: getterTypes.isLoggedIn,
+        isAnonimus: getterTypes.isAnonymos
       })
+      // ...mapState({
+      //   // currentUser: state => state.auth.currentUser,
+      //   // isLoggedIn: state => state.auth.isLoggedIn
+      // }),
+      // currentUser() {
+      //   return this.$store.getters[getterTypes.currentUser]
+      // },
+      // isLoggedIn() {
+      //   return this.$store.getters[getterTypes.isLoggedIn]
+      // },
+      // isAnonimus() {
+      //   return this.$store.getters[getterTypes.isAnonimus]
+      // }
     }
   }
 </script>
