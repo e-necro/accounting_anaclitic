@@ -117,7 +117,7 @@ export default ({
             password: pass
           }).then(user => {
             console.log('succesfully register user ', user)
-            // this.$router.push({name: 'home'})
+            this.$router.push({name: 'home'})
           })
         }
       }

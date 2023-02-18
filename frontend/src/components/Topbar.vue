@@ -52,12 +52,13 @@
   import { getterTypes } from '@/store/modules/auth';
   export default {
     name: 'McvTopbar',
+    
     computed: {
       ...mapGetters({
         currentUser: getterTypes.currentUser,
         isLoggedIn: getterTypes.isLoggedIn,
         isAnonimus: getterTypes.isAnonymos
-      })
+      }),
       // ...mapState({
       //   // currentUser: state => state.auth.currentUser,
       //   // isLoggedIn: state => state.auth.isLoggedIn
@@ -69,7 +70,10 @@
       //   return this.$store.getters[getterTypes.isLoggedIn]
       // },
       // isAnonimus() {
-      //   return this.$store.getters[getterTypes.isAnonimus]
+        // console.log(this.$store.getters[getterTypes.isAnonymos])
+        // console.log(this.$store.getters[getterTypes.isLoggedIn])
+        // console.log(this.$store.getters[getterTypes.isLoggedIn] === false)
+      //   return this.$store.getters[getterTypes.isAnonymos]
       // }
     }
   }

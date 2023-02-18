@@ -89,6 +89,23 @@ async def register(userData: UserReg, response: Response):
 
 @app.post("/login", status_code = 200)
 async def login(userData: UserLogin, response: Response):
-  
+  try:
+    userData.user["token"] = create_access_token(userData)
 
-  return 'login'
+    connection = MysqlConnect.connectDb()  
+    mycursor = connection.cursor(dictionary=True)
+    mycursor.execute("SELECT * FROM users WHERE email = %s AND password = %s ", (userData.user['email'],userData.user['password']) )
+    res = mycursor.fetchall()
+    if (len(res) == 0):
+      return RequestError(response, {'MySQL', 'Wrong email/password?'}, 401)
+
+    del(userData.user['password'])
+    return userData
+
+  except Error as e:
+        response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
+        errors = { 'errors': {
+            'MySQL': e #  выдает Object object ... wtf?
+          }
+        }
+        return errors

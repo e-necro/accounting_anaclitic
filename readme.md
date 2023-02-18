@@ -8,6 +8,14 @@
 
  # TODO:
  - в token.py залит jwt token, который надо нормально сохранять(или не надо?)
- - blueimp-md5 импортируется, но в Dockerfile она не прописана. WTF?
+ 
+
+ 
+ ### bug
+херня какая-то с blueimp-md5 - в package.json хреново прописан
+Заработал только через
+
+    docker exec -it accounting_analitic_frontend_1 sh
+    в нем тупо 'npm install blueimp-md5' и все норм. wtf?
 
  

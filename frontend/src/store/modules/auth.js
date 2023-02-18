@@ -3,6 +3,7 @@ import {setItem} from '@/helpers/persistanceStorage'
 
 const state = {
   isSubmitting: false,
+  isLoading: false,
   currentUser: null,
   validationErrors: null,
   isLoggedIn: null
@@ -16,11 +17,16 @@ export const mutationTypes = {
   loginStart: '[auth] loginStart',
   loginSuccess: '[auth] loginSuccess',
   loginFailure: '[auth] loginFailure',
+
+  getCurrentUserStart: '[auth] getCurrentUserStart',
+  getCurrentUserSuccess: '[auth] getCurrentUserSuccess',
+  getCurrentUserFailure: '[auth] getCurrentUserFailure',
 }
 
 export const actionTypes = {
   register: '[auth] register',
   login: '[auth] login',
+  getCurrentUser: '[auth] getCurrentUser',
 }
 
 export const getterTypes = {
@@ -70,6 +76,21 @@ const mutations = {
     state.isSubmitting = false
     state.validationErrors = payload
   },
+
+  [mutationTypes.getCurrentUserStart](state) {
+    state.isLoading = true
+  },
+  [mutationTypes.getCurrentUserSuccess](state, payload) {
+    state.isLoading = false
+    state.currentUser = payload
+    state.isLoading = true
+  },
+  [mutationTypes.getCurrentUserFailure](state) {
+    state.isLoading = false
+    state.isLoggedIn = false
+    state.currentUser = null
+  }
+
 }
 
 const actions = {
@@ -101,6 +122,20 @@ const actions = {
         })
         .catch( result => {
           context.commit(mutationTypes.loginFailure, result.response.data.errors)
+        })
+    })
+  },
+
+  [actionTypes.getCurrentUser](context) {
+    return new Promise((resolve) => {
+      context.commit(mutationTypes.getCurrentUserStart)
+      authApi.getCurrentUser()
+        .then(response => {
+          context.commit(mutationTypes.getCurrentUserSuccess, response.data.user) /// может косяк вылезти, т.к. отдается однако по другому почему-то
+          resolve(response.data.user)
+        })
+        .catch( () => {
+          context.commit(mutationTypes.getCurrentUserFailure)
         })
     })
   },
