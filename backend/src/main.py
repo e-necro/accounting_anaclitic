@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Request, Response, status, HTTPException
+from fastapi import FastAPI, Request, Response, status, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from mysql.connector import Error
+from typing import Union
 
 from .MysqlConnect import MysqlConnect
 
@@ -109,3 +110,23 @@ async def login(userData: UserLogin, response: Response):
           }
         }
         return errors
+
+
+@app.get("/user", status_code = 200)
+async def user(response: Response, Authorization: Union[str, None] = Header(default=None)):
+  try:
+    token = Authorization[6:]
+    if (verify_token(token)):
+      # токен верный, достанем юзера по нему
+      connection = MysqlConnect.connectDb()  
+      mycursor = connection.cursor(dictionary=True)
+      # return "SELECT * FROM users WHERE token = '" + token + "'"
+      mycursor.execute("SELECT * FROM users WHERE token = '" + token + "'")
+      res = mycursor.fetchall()
+      if (len(res) == 0):
+        return RequestError(response, {'MySQL', 'Token error. Try to relogin'}, 401)
+
+      del(userData.user['password'])
+      return userData
+  except Error as e:
+    return RequestError(response, {'MySQL', e}, 419)

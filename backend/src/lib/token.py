@@ -18,8 +18,8 @@ def create_access_token(userData):
     }
      
     # expire time of the token
-    expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
+    # expire = datetime.utcnow() + timedelta(minutes=15) #TODO: проверить надо ли что с этим делать или пусть не протухают?
+    # to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
      
     return encoded_jwt
@@ -30,9 +30,10 @@ def verify_token(token: str):
         # try to decode the token, it will
         # raise error if the token is not correct
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
+        return True # значит токен верный. TODO: проверить еще с протуханием как!
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-        )
+        return False
+        # raise HTTPException(
+        #     status_code=status.HTTP_401_UNAUTHORIZED,
+        #     detail="Could not validate credentials",
+        # )
