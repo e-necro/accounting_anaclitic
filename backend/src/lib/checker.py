@@ -15,11 +15,9 @@ def checkRegister(userData):
   ошибка в виде:
   {'MySQL', 'User already registered'}
 '''
-def RequestError(response, error):
-  response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
-  errors = { 'errors': {
-      error
-    }
+def RequestError(response, error, status_code = 419):
+  response.status_code = status_code  # вывод ошибок, точнее формат сделать нормальным! 
+  errors = { 'errors': error
   }
   return errors
 

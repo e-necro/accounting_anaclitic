@@ -14,7 +14,7 @@ class UserReg(BaseModel):
 class UserLogin(BaseModel):
   '''
     {
-      username,
+      email,
       password
     }
   '''

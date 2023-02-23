@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Request, Response, status, HTTPException
+from fastapi import FastAPI, Request, Response, status, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from mysql.connector import Error
+from typing import Union
 
 from .MysqlConnect import MysqlConnect
 
@@ -85,3 +86,48 @@ async def register(userData: UserReg, response: Response):
 
     
   # return await request.json()
+
+
+@app.post("/login", status_code = 200)
+async def login(userData: UserLogin, response: Response):
+  try:
+    userData.user["token"] = create_access_token(userData)
+
+    connection = MysqlConnect.connectDb()  
+    mycursor = connection.cursor(dictionary=True)
+    mycursor.execute("SELECT * FROM users WHERE email = %s AND password = %s ", (userData.user['email'],userData.user['password']) )
+    res = mycursor.fetchall()
+    if (len(res) == 0):
+      return RequestError(response, {'MySQL', 'Wrong email/password?'}, 401)
+
+    del(userData.user['password'])
+    return userData
+
+  except Error as e:
+        response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
+        errors = { 'errors': {
+            'MySQL': e #  выдает Object object ... wtf?
+          }
+        }
+        return errors
+
+
+@app.get("/user", status_code = 200)
+async def user(response: Response, Authorization: Union[str, None] = Header(default=None)):
+  try:
+    token = Authorization[6:]
+    if (verify_token(token)):
+      # токен верный, достанем юзера по нему
+      connection = MysqlConnect.connectDb()  
+      mycursor = connection.cursor(dictionary=True)
+      # return "SELECT * FROM users WHERE token = '" + token + "'"
+      mycursor.execute("SELECT * FROM users WHERE token = '" + token + "' AND deleted = 0")
+      res = mycursor.fetchall()
+      if (len(res) == 0):
+        return RequestError(response, {'MySQL', 'Token error. Try to relogin'}, 401)
+      
+      del(res[0]['password'])
+      return res
+
+  except Error as e:
+    return RequestError(response, {'MySQL', e}, 419)
