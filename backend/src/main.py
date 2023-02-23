@@ -121,12 +121,13 @@ async def user(response: Response, Authorization: Union[str, None] = Header(defa
       connection = MysqlConnect.connectDb()  
       mycursor = connection.cursor(dictionary=True)
       # return "SELECT * FROM users WHERE token = '" + token + "'"
-      mycursor.execute("SELECT * FROM users WHERE token = '" + token + "'")
+      mycursor.execute("SELECT * FROM users WHERE token = '" + token + "' AND deleted = 0")
       res = mycursor.fetchall()
       if (len(res) == 0):
         return RequestError(response, {'MySQL', 'Token error. Try to relogin'}, 401)
+      
+      del(res[0]['password'])
+      return res
 
-      del(userData.user['password'])
-      return userData
   except Error as e:
     return RequestError(response, {'MySQL', e}, 419)
