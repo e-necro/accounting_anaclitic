@@ -16,7 +16,7 @@
 
 <script>
 
-import McvTopbar from '@/components/Topbar'
+import McvTopbar from './components/Topbar'
 import { actionTypes } from './store/modules/auth';
 
 export default {
