@@ -17,7 +17,6 @@ export default {
     return {
       currentAuto: null,
       autoList: [],
-      userData: null
     }
   },
   components: {
@@ -25,34 +24,29 @@ export default {
   },
   computed: {
     currentUser() {
-      this.userData = this.$store.getters[getterTypes.currentUser]
-      return this.userData
+      let currentUser1 = this.$store.getters[getterTypes.currentUser]
+      this.getMessage(currentUser1)
+      return currentUser1
     },
   },
   methods: { 
     getMessage(user) {
-      axios({
-        method: 'get',
-        url: '/',
-        data: {
-          user_id: user._id,
-          token: user.token
-        }
-      })
+      if (user !== null) {
+        axios({
+          method: 'get',
+          url: '/',
+          data: {
+            user_id: user._id,
+            token: user.token
+          }
+        })
         .then((res) => {
           this.autoList = res.data
         })
         .catch((error) => {
           console.error(error)
         })
-    }
-  },
-  watch: {
-    userData: function(oldData, newData) {
-      // console.log(oldData)
-      // console.log(newData)
-      ///TODO: выяснить как в том курсе проверяется авторизация/
-      this.getMessage(oldData)
+      }
     }
   },
   mounted() {
