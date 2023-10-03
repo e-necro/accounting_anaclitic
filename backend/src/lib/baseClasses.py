@@ -19,3 +19,13 @@ class UserLogin(BaseModel):
     }
   '''
   user: Dict
+
+class UserCheck(BaseModel):
+  '''
+    {
+      user_id,
+      token
+    }
+  '''
+  user_id: str
+  token: str

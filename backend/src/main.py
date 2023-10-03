@@ -7,7 +7,7 @@ from typing import Union
 from .MysqlConnect import MysqlConnect
 
 from .lib.checker import  *
-from .lib.user import UserReg, UserLogin
+from .lib.baseClasses import UserReg, UserLogin, UserCheck
 from .lib.token import *
 
 
@@ -32,6 +32,24 @@ async def home():
     res = mycursor.fetchall()
     connection.close()
     return res
+      
+  except Error as e:
+      return e
+  
+
+@app.post("/get_my_auto", status_code = 200)
+async def get_my_auto(userData: UserCheck, response: Response):
+  try:
+    
+    if (verify_token(userData.token) & (userData.user_id != '') ):
+      connection = MysqlConnect.connectDb()  
+      mycursor = connection.cursor(dictionary=True)
+      mycursor.execute("SELECT * FROM auto WHERE user_id = %s", (userData.user_id,))
+      res = mycursor.fetchall()
+      connection.close()
+      return res
+    else:
+      return RequestError(response, {'MySQL', 'Token is obsolete'})
       
   except Error as e:
       return e

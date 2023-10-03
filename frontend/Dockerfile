@@ -13,4 +13,4 @@ RUN npm install
 RUN npm audit fix 
 RUN npm install bootstrap axios 
 
-# CMD ["npm", "run", "serve"]  - отключил. Вручную удобнее scss подключение чекать было
+CMD ["npm", "run", "serve"]  

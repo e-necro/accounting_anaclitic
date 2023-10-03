@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import McvRepairCatalog from '@/components/RepairCatalog'
+// import McvRepairCatalog from '@/components/RepairCatalog'
 import axios from 'axios'
 import { getterTypes } from '@/store/modules/auth';
 
@@ -20,7 +20,7 @@ export default {
     }
   },
   components: {
-    McvRepairCatalog,
+    // McvRepairCatalog,
   },
   computed: {
     currentUser() {
@@ -32,14 +32,15 @@ export default {
   methods: { 
     getMessage(user) {
       if (user !== null) {
-        axios({
-          method: 'get',
-          url: '/',
-          data: {
-            user_id: user._id,
-            token: user.token
-          }
-        })
+        // axios({
+        //   method: 'post',
+        //   url: '/get_my_auto',
+        //   data: {
+        //     user_id: user._id,
+        //     token: user.token
+        //   }
+        // })
+        axios.post('/get_my_auto',{user_id: user._id, token: user.token})
         .then((res) => {
           this.autoList = res.data
         })
