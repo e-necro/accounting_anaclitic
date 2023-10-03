@@ -69,3 +69,7 @@ fieldset {
   cursor: not-allowed;
   opacity: .65;
 }
+
+.navbar-nav {
+  flex-direction: row;
+}
