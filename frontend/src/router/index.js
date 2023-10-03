@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import Register from '@/views/Register'
 import Login from '@/views/Login'
 import NotFound from '@/views/NotFound'
-import AutoCatalog from '@/components/AutoCatalog'
+import AutoCatalog from '@/views/AutoCatalog'
 import UserProfile from '@/views/UserProfile'
 
 const routes = [

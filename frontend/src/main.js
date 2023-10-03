@@ -9,7 +9,6 @@ import mainStyles from '@/assets/css/main.css'
 
 
 
-
 createApp(App)
   .use(store)
   .use(router)
