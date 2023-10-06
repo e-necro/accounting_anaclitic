@@ -9,6 +9,16 @@ def checkRegister(userData):
   else:
     return True,'all good'
 
+# Добавление/изменения записи машины
+def checkAutoData(autoData):
+  if (autoData['name'] == ''):
+    return False, {'name error':'Write your name'}
+  elif (autoData['comment'] == ''):
+    return False, {'description error':'Fill your description'}
+  elif (autoData['data'] == ''):
+    return False, {'data error':'when your auto is buyed?'}
+  else:
+    return True,'all good'
 
 '''
   возврат статуса и ошибки

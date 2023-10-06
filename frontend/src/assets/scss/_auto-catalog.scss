@@ -1,3 +1,11 @@
 .auto-catalog {
-  color: red;
+  
+  &_no-data {
+    img {
+      display: block;
+      margin: 10px auto;
+      max-height: 100px;
+    }
+    
+  }
 }

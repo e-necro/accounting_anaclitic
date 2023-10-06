@@ -21,11 +21,14 @@ class UserLogin(BaseModel):
   user: Dict
 
 class UserCheck(BaseModel):
-  '''
-    {
-      user_id,
-      token
-    }
-  '''
+# для проверки токена юзера.
   user_id: str
   token: str
+
+class AddAuto(BaseModel):
+  # добавление тачки
+  user_id: str
+  token: str
+  name: str
+  comment: str
+  date: str

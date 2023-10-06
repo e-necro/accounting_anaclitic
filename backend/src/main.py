@@ -7,7 +7,7 @@ from typing import Union
 from .MysqlConnect import MysqlConnect
 
 from .lib.checker import  *
-from .lib.baseClasses import UserReg, UserLogin, UserCheck
+from .lib.baseClasses import UserReg, UserLogin, UserCheck, AddAuto
 from .lib.token import *
 
 
@@ -36,24 +36,6 @@ async def home():
   except Error as e:
       return e
   
-
-@app.post("/get_my_auto", status_code = 200)
-async def get_my_auto(userData: UserCheck, response: Response):
-  try:
-    
-    if (verify_token(userData.token) & (userData.user_id != '') ):
-      connection = MysqlConnect.connectDb()  
-      mycursor = connection.cursor(dictionary=True)
-      mycursor.execute("SELECT * FROM auto WHERE user_id = %s", (userData.user_id,))
-      res = mycursor.fetchall()
-      connection.close()
-      return res
-    else:
-      return RequestError(response, {'MySQL', 'Token is obsolete'})
-      
-  except Error as e:
-      return e
-      
 
 @app.post("/register", status_code = 200)
 async def register(userData: UserReg, response: Response):
@@ -149,3 +131,42 @@ async def user(response: Response, Authorization: Union[str, None] = Header(defa
 
   except Error as e:
     return RequestError(response, {'MySQL', e}, 419)
+
+
+@app.post("/get_my_auto", status_code = 200)
+async def get_my_auto(userData: UserCheck, response: Response):
+  try:
+    userData.user_id = 444 # TODO: убрать это
+    if (verify_token(userData.token) & (userData.user_id != '') ):
+      connection = MysqlConnect.connectDb()  
+      mycursor = connection.cursor(dictionary=True)
+      mycursor.execute("SELECT * FROM auto WHERE user_id = %s", (userData.user_id,))
+      res = mycursor.fetchall()
+      connection.close()
+      return res
+    else:
+      return RequestError(response, {'MySQL', 'Token is obsolete'})
+      
+  except Error as e:
+      return e
+      
+
+@app.post("/add_my_auto", status_code = 200)
+async def add_my_auto(userData: AddAuto, response: Response):
+  try:
+    res = checkAutoData(userData)
+    if (res[0] == True):
+      if (verify_token(userData.token) & (userData.user_id != '') ):
+        connection = MysqlConnect.connectDb()  
+        mycursor = connection.cursor(dictionary=True)
+        mycursor.execute("INSERT INTO auto VALUES (%s, %s, %s) ", (userData.name, userData.comment, userData.date))
+        connection.commit()
+        _id = mycursor.lastrowid
+        connection.close()
+        return _id
+      else:
+        return RequestError(response, {'MySQL', 'Token is obsolete'})
+      
+  except Error as e:
+      return e
+      
