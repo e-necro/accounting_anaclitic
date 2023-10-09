@@ -1,23 +1,33 @@
 <template>
-  <div class="add-auto">
-    <h2>Добавление автомобиля</h2>
-    <div v-if="sResult !== null" class="add-auto__result"> {{ sResult }}</div>
-    <div v-else class="add-auto__cont">
-      <label for="auto-name">
-        Название: 
-        <input type="text" id="auto-name" name="auto-name" :value="name" required>
-      </label>
-      <label for="auto-comment">
-        Краткое описание: 
-        <input type="text" id="auto-comment" name="auto-comment" :value="comment" required>
-      </label>
-      <label for="auto-date">
-        Дата покупки:
-        <input type="text" id="auto-date" name="auto-date" :value="date" required>
-      </label>
-      <button @click="closeForm">Отмена</button>
-      <button @click="saveAuto">Сохранить</button>
-    </div>
+  <div class="add-auto dialog" :class="showed">
+    <label class="dlg-back" for="dialog_state"></label>
+      <div class="dlg-wrap">
+        <div class="closing_cross" @click="closeForm"></div>
+        <div class="row modal-content">
+          <div class="modal-body">
+            <h2 class="modal-caption">Добавление автомобиля</h2>
+            <div v-if="sResult !== null" class="add-auto__result"> {{ sResult }}</div>
+            <div v-else class="add-auto__cont">
+              <label for="auto-name">
+                Название: 
+                <input type="text" id="auto-name" name="auto-name" :value="name" required>
+              </label>
+              <label for="auto-comment">
+                Краткое описание: 
+                <input type="text" id="auto-comment" name="auto-comment" :value="comment" required>
+              </label>
+              <label for="auto-date">
+                Дата покупки:
+                <input type="text" id="auto-date" name="auto-date" :value="date" required>
+              </label>
+              <div class="button-container">
+                <button @click="closeForm">Отмена</button>
+                <button @click="saveAuto">Сохранить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -38,7 +48,8 @@ export default {
       name: null,
       comment: null,
       date: null,
-      sResult: null
+      sResult: null,
+      showed: ''
     }
   },
   methods: {
@@ -68,7 +79,11 @@ export default {
     },
     closeForm(){
       // поменять данные родительского компонента?
+      this.showed = '';
     }
+  },
+  mounted() {
+    this.showed = 'dialog_open';
   }
 }
 

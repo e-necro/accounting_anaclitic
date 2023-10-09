@@ -40,23 +40,12 @@ export default {
   },
   computed: {
     currentUser() {
-      let currentUser1 = this.$store.getters[getterTypes.currentUser]
-      this.getMessage(currentUser1)
-      return currentUser1
+      return this.$store.getters[getterTypes.currentUser]
     },
   },
   methods: { 
-    // TODO: вызоов этого метода сбоит на маке. Или это не только на маке?
     getMessage(user) {
       if (user !== null) {
-        // axios({
-        //   method: 'post',
-        //   url: '/get_my_auto',
-        //   data: {
-        //     user_id: user._id,
-        //     token: user.token
-        //   }
-        // })
         axios.post('/get_my_auto',{user_id: user._id, token: user.token})
         .then((res) => {
           this.autoList = res.data
@@ -71,7 +60,18 @@ export default {
     }
   },
   mounted() {
-    // this.getMessage()
+    let $this = this;
+    (function myLoop(i) {
+      setTimeout(function() {
+        let user =  $this.$store.getters[getterTypes.currentUser];
+        if (user !== null) {
+          $this.getMessage(user)      
+          return 1
+        }
+        if (--i) myLoop(i);
+      }, 1000)
+    })(20);
+    
   }
 }
 
