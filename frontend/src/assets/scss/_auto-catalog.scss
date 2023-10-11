@@ -18,10 +18,13 @@
         text-align: center;
         width: 100%;
         border: 1px solid black;
-        border-bottom: none;
+        border-top: none;
       }
-      &:last-child {
-        border-bottom: 1px solid black;
+      &:first-child {
+        border-top: 1px solid black;
+      }
+      &-title {
+        font-weight: 700;
       }
     }
   }

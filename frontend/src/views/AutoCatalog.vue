@@ -7,14 +7,18 @@
 
     <div v-else-if="autoList.length !== 0" class="auto-catalog_list" >
       <div class="item item-title">
+        <div class="item__number">№</div>
         <div class="item__name">Название</div>
         <div class="item__comment">Описание машины</div>
         <div class="item__date"> Дата покупки</div>
+        <div class="item__control"></div>
       </div>
-      <div class="item" v-for="auto in autoList" :key="auto._id">
+      <div class="item" v-for="(auto, index) in autoList" :key="auto._id">
+        <div class="item__number"> {{ index }} </div>
         <div class="item__name">{{ auto.name }}</div>
         <div class="item__comment">{{ auto.comment }}</div>
         <div class="item__date">{{ auto.date }}</div>
+        <div class="item__control"> <catalog-control :id="key"></catalog-control></div>
       </div>
       <h3 v-if="!showAddForm"><a href="" @click.prevent="showForm(true)">Добавить еще машину?</a></h3>
       <mcv-add-auto 
@@ -47,7 +51,7 @@ export default {
     return {
       currentAuto: null,
       autoList: null,
-      showAddForm: false
+      showAddForm: false,
     }
   },
   components: {
@@ -85,6 +89,7 @@ export default {
     }
   },
   mounted() {
+    this.ii = 0;
     let $this = this;
     (function myLoop(i) {
       setTimeout(function() {
