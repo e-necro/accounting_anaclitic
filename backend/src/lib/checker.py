@@ -11,11 +11,11 @@ def checkRegister(userData):
 
 # Добавление/изменения записи машины
 def checkAutoData(autoData):
-  if (autoData['name'] == ''):
+  if (autoData.name == ''):
     return False, {'name error':'Write your name'}
-  elif (autoData['comment'] == ''):
+  elif (autoData.comment == ''):
     return False, {'description error':'Fill your description'}
-  elif (autoData['data'] == ''):
+  elif (autoData.date == ''):
     return False, {'data error':'when your auto is buyed?'}
   else:
     return True,'all good'

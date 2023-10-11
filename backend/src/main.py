@@ -136,7 +136,7 @@ async def user(response: Response, Authorization: Union[str, None] = Header(defa
 @app.post("/get_my_auto", status_code = 200)
 async def get_my_auto(userData: UserCheck, response: Response):
   try:
-    userData.user_id = 444 # TODO: убрать это
+    # userData.user_id = 444 # TODO: убрать это
     if (verify_token(userData.token) & (userData.user_id != '') ):
       connection = MysqlConnect.connectDb()  
       mycursor = connection.cursor(dictionary=True)
@@ -159,11 +159,11 @@ async def add_my_auto(userData: AddAuto, response: Response):
       if (verify_token(userData.token) & (userData.user_id != '') ):
         connection = MysqlConnect.connectDb()  
         mycursor = connection.cursor(dictionary=True)
-        mycursor.execute("INSERT INTO auto VALUES (%s, %s, %s) ", (userData.name, userData.comment, userData.date))
+        mycursor.execute("INSERT INTO auto (name, comment, date_create, user_id) VALUES ( %s, %s, %s, %s) ", ( userData.name, userData.comment, userData.date, userData.user_id))
         connection.commit()
         _id = mycursor.lastrowid
         connection.close()
-        return _id
+        return {'_id': _id}
       else:
         return RequestError(response, {'MySQL', 'Token is obsolete'})
       

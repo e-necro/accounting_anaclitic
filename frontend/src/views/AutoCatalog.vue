@@ -6,7 +6,22 @@
     </div>
 
     <div v-else-if="autoList.length !== 0" class="auto-catalog_list" >
-      {{ autoList }}
+      <div class="item item-title">
+        <div class="item__name">Название</div>
+        <div class="item__comment">Описание машины</div>
+        <div class="item__date"> Дата покупки</div>
+      </div>
+      <div class="item" v-for="auto in autoList" :key="auto._id">
+        <div class="item__name">{{ auto.name }}</div>
+        <div class="item__comment">{{ auto.comment }}</div>
+        <div class="item__date">{{ auto.date }}</div>
+      </div>
+      <h3 v-if="!showAddForm"><a href="" @click.prevent="showForm(true)">Добавить еще машину?</a></h3>
+      <mcv-add-auto 
+        v-if="showAddForm" 
+        :current-user="currentUser"
+        @close-form="reloadPage"
+        ></mcv-add-auto>
     </div>
 
     <div v-else class="auto-catalog_list-no-data-add">
@@ -14,6 +29,7 @@
       <mcv-add-auto 
         v-if="showAddForm" 
         :current-user="currentUser"
+        @close-form="reloadPage"
         ></mcv-add-auto>
     </div>  
   </div>
@@ -57,6 +73,15 @@ export default {
     },
     showForm(toShow) {
       this.showAddForm = toShow
+    },
+    reloadPage: function(param) {
+      if (param == 'added') {
+        this.autoList = null;
+        this.showAddForm = false; 
+        this.getMessage(this.currentUser);
+      } else {
+        this.showAddForm = false; 
+      }
     }
   },
   mounted() {
@@ -65,7 +90,7 @@ export default {
       setTimeout(function() {
         let user =  $this.$store.getters[getterTypes.currentUser];
         if (user !== null) {
-          $this.getMessage(user)      
+          $this.getMessage(user)   
           return 1
         }
         if (--i) myLoop(i);
