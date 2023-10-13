@@ -13,12 +13,13 @@
         <div class="item__date"> Дата покупки</div>
         <div class="item__control"></div>
       </div>
-      <div class="item" v-for="(auto, index) in autoList" :key="auto._id">
+      <div class="item" v-for="(auto, index) in autoList" :key="auto._id" :data-id="auto._id">
         <div class="item__number"> {{ index }} </div>
         <div class="item__name">{{ auto.name }}</div>
         <div class="item__comment">{{ auto.comment }}</div>
         <div class="item__date">{{ auto.date }}</div>
-        <div class="item__control"> <catalog-control :id="key"></catalog-control></div>
+        <div class="item__control"> <mcv-catalog-control :id="auto._id" :current-user="currentUser" :car-name="auto.name" ></mcv-catalog-control>
+        </div>
       </div>
       <h3 v-if="!showAddForm"><a href="" @click.prevent="showForm(true)">Добавить еще машину?</a></h3>
       <mcv-add-auto 
@@ -42,6 +43,7 @@
 <script>
 // import McvRepairCatalog from '@/components/RepairCatalog'
 import McvAddAuto from '@/components/AddAuto'
+import McvCatalogControl from '@/components/CatalogControl'
 import axios from 'axios'
 import { getterTypes } from '@/store/modules/auth';
 
@@ -55,7 +57,8 @@ export default {
     }
   },
   components: {
-    McvAddAuto
+    McvAddAuto,
+    McvCatalogControl
     // McvRepairCatalog,
   },
   computed: {

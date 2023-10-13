@@ -16,7 +16,7 @@ def checkAutoData(autoData):
   elif (autoData.comment == ''):
     return False, {'description error':'Fill your description'}
   elif (autoData.date == ''):
-    return False, {'data error':'when your auto is buyed?'}
+    return False, {'date error':'when your auto is buyed?'}
   else:
     return True,'all good'
 
@@ -30,5 +30,3 @@ def RequestError(response, error, status_code = 419):
   errors = { 'errors': error
   }
   return errors
-
-

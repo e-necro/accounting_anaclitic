@@ -1,0 +1,20 @@
+.control {
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  a {
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-left: 1em;
+  }
+  &-edit {
+    background-image: url("@/assets/img/edit.png");
+    background-size: cover;
+  }
+  &-delete {
+    background-image: url("@/assets/img/trash.png");
+    background-size: cover;
+  }
+}

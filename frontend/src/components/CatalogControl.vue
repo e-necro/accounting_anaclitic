@@ -18,6 +18,10 @@
       id: {
         type: String,
         required: true
+      },
+      carName: {
+        type: String,
+        required: true
       }
     },
     data() {
@@ -27,8 +31,35 @@
     },
     methods: {
      deleteAuto() {
+      let res = confirm('Действительно хотите удалить машину ~ ' + this.carName + '~ ? \r\n (не получится если к ней уже привязаны ремонты)');
+      if (res) {
+        let oData = {}
+        oData['user_id'] = this.currentUser._id
+        oData['token'] = this.currentUser.token
+        oData['_id'] = this.id
+
+        axios.post('/delete_my_auto', oData)
+          .then((res) => {
+            if (res.data.deleted == true) {
+              this.sResult = 'Готово'
+              window.location.reload()
+            } else if (res.data.deleted == 'have_data') {
+              this.sResult = "К машине привязаны ремонты. Сначала нужно их удалить";
+            } else {
+              this.sResult = 'Произошла ошибка. Попробуйте еще раз';
+            }
+            
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      }
+     },
+     editAuto() {
+        console.log('currentUser: ', this.currentUser, ' id: ', this.id, ' carname: ', this.carName)
         
      }
+
     },
     mounted() {
     }

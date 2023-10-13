@@ -7,7 +7,7 @@ from typing import Union
 from .MysqlConnect import MysqlConnect
 
 from .lib.checker import  *
-from .lib.baseClasses import UserReg, UserLogin, UserCheck, AddAuto
+from .lib.baseClasses import UserReg, UserLogin, UserCheck, AddAuto, DeleteAuto
 from .lib.token import *
 
 
@@ -170,3 +170,22 @@ async def add_my_auto(userData: AddAuto, response: Response):
   except Error as e:
       return e
       
+
+@app.post("/delete_my_auto", status_code = 200)
+async def delete_my_auto(userData: DeleteAuto, response: Response):
+  try:
+    if (verify_token(userData.token) & (userData.user_id != '' & (userData._id !='')) ):
+      return False
+      # TODO: посмотреть как добавляются внешние ключи и как их проверять(точнее что именно отдается если не даст удалить). Сравнивать, думаю, с  auto_cat айдишниками
+      # connection = MysqlConnect.connectDb()  
+      # mycursor = connection.cursor(dictionary=True)
+      # mycursor.execute("DELETE FROM auto WHERE id=%s",(userData._id))
+      # connection.commit()
+      # _id = mycursor.lastrowid
+      # connection.close()
+      # return {'_id': _id}
+    # else:
+    #   return RequestError(response, {'MySQL', 'Token is obsolete'})
+      
+  except Error as e:
+      return e
