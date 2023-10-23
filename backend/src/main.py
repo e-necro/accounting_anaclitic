@@ -177,6 +177,7 @@ async def delete_my_auto(userData: DeleteAuto, response: Response):
     if (verify_token(userData.token) & (userData.user_id != '' & (userData._id !='')) ):
       return False
       # TODO: посмотреть как добавляются внешние ключи и как их проверять(точнее что именно отдается если не даст удалить). Сравнивать, думаю, с  auto_cat айдишниками
+      # TODO 2: связь есть. Изучть как в мускуле с коммитом и отменой его проходят. Потом выяснить как питон с этим работает. Удалить с добавленным ремонтом, посмотреть что будет без проверок вручную
       # connection = MysqlConnect.connectDb()  
       # mycursor = connection.cursor(dictionary=True)
       # mycursor.execute("DELETE FROM auto WHERE id=%s",(userData._id))
