@@ -168,25 +168,28 @@ async def add_my_auto(userData: AddAuto, response: Response):
         return RequestError(response, {'MySQL', 'Token is obsolete'})
       
   except Error as e:
-      return e
+      return RequestError(response, {'error', e})
       
 
 @app.post("/delete_my_auto", status_code = 200)
 async def delete_my_auto(userData: DeleteAuto, response: Response):
   try:
-    if (verify_token(userData.token) & (userData.user_id != '' & (userData._id !='')) ):
-      return False
+    if (verify_token(userData.token) & (userData.user_id != '') & (userData.id !='') ):
+      # return False
       # TODO: посмотреть как добавляются внешние ключи и как их проверять(точнее что именно отдается если не даст удалить). Сравнивать, думаю, с  auto_cat айдишниками
       # TODO 2: связь есть. Изучть как в мускуле с коммитом и отменой его проходят. Потом выяснить как питон с этим работает. Удалить с добавленным ремонтом, посмотреть что будет без проверок вручную
-      # connection = MysqlConnect.connectDb()  
-      # mycursor = connection.cursor(dictionary=True)
-      # mycursor.execute("DELETE FROM auto WHERE id=%s",(userData._id))
-      # connection.commit()
-      # _id = mycursor.lastrowid
-      # connection.close()
-      # return {'_id': _id}
-    # else:
-    #   return RequestError(response, {'MySQL', 'Token is obsolete'})
+      connection = MysqlConnect.connectDb()  
+      mycursor = connection.cursor(dictionary=True)
+      mycursor.execute("DELETE FROM auto WHERE _id=%s",(userData.id,))
+      connection.commit()
+      rowCount = mycursor.rowcount
+      connection.close()
+      if (rowCount > 0):
+        return {'deleted': True}
+      else:
+        return {'deleted': False}
+    else:
+      return RequestError(response, {'MySQL', 'Token is obsolete'})
       
   except Error as e:
-      return e
+      return {'deleted': 'have_data', 'errors': e}

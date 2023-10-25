@@ -36,7 +36,7 @@
         let oData = {}
         oData['user_id'] = this.currentUser._id
         oData['token'] = this.currentUser.token
-        oData['_id'] = this.id
+        oData['id'] = this.id
 
         axios.post('/delete_my_auto', oData)
           .then((res) => {
