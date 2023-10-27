@@ -42,11 +42,17 @@
           .then((res) => {
             if (res.data.deleted == true) {
               this.sResult = 'Готово'
-              window.location.reload()
             } else if (res.data.deleted == 'have_data') {
               this.sResult = "К машине привязаны ремонты. Сначала нужно их удалить";
             } else {
               this.sResult = 'Произошла ошибка. Попробуйте еще раз';
+              
+            }
+            
+            if (this.sResult == 'Готово') {
+              this.$root.$refs.showMessageForm.openForm('success', this.sResult);
+            } else {
+              this.$root.$refs.showMessageForm.openForm('error', this.sResult);
             }
             
           })

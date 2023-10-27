@@ -1,5 +1,5 @@
 .control {
-  border: none;
+  border: none!important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,6 +10,7 @@
     margin-left: 1em;
     &:hover {
       cursor: pointer;
+      filter: hue-rotate(180deg);
     }
   }
   &-edit {
