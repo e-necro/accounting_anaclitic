@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, Response, status, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 import json
 from mysql.connector import Error
 from typing import Union
@@ -175,9 +176,7 @@ async def add_my_auto(userData: AddAuto, response: Response):
 async def delete_my_auto(userData: DeleteAuto, response: Response):
   try:
     if (verify_token(userData.token) & (userData.user_id != '') & (userData.id !='') ):
-      # return False
-      # TODO: посмотреть как добавляются внешние ключи и как их проверять(точнее что именно отдается если не даст удалить). Сравнивать, думаю, с  auto_cat айдишниками
-      # TODO 2: связь есть. Изучть как в мускуле с коммитом и отменой его проходят. Потом выяснить как питон с этим работает. Удалить с добавленным ремонтом, посмотреть что будет без проверок вручную
+      time = {'start': datetime.now()}
       connection = MysqlConnect.connectDb()  
       mycursor = connection.cursor(dictionary=True)
       mycursor.execute("DELETE FROM auto WHERE _id=%s",(userData.id,))
@@ -192,4 +191,5 @@ async def delete_my_auto(userData: DeleteAuto, response: Response):
       return RequestError(response, {'MySQL', 'Token is obsolete'})
       
   except Error as e:
-      return {'deleted': 'have_data', 'errors': e}
+      time['end'] = datetime.now()
+      return {'deleted': 'have_data', 'errors': e, 'time': time}

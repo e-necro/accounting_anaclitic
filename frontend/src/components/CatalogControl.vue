@@ -1,7 +1,10 @@
 <template>
-    <div class="control" >
-            <a class="control-edit" @click.prevent="editAuto"></a>
-            <a class="control-delete" @click.prevent="deleteAuto"></a>
+    <div v-if="autoUpd === true" class="control_no-data">
+      <img class="control-no-data-loader" src="@/assets/img/giphy.gif">
+    </div>
+    <div v-else class="control" >
+      <a class="control-edit" @click.prevent="editAuto"></a>
+      <a class="control-delete" @click.prevent="deleteAuto"></a>
     </div>
   </template>
   
@@ -27,12 +30,14 @@
     data() {
       return {
         sResult: null,
+        autoUpd: null
       }
     },
     methods: {
      deleteAuto() {
       let res = confirm('Действительно хотите удалить машину ~ ' + this.carName + '~ ? \r\n (не получится если к ней уже привязаны ремонты)');
       if (res) {
+        this.autoUpd = true;
         let oData = {}
         oData['user_id'] = this.currentUser._id
         oData['token'] = this.currentUser.token
@@ -54,16 +59,18 @@
             } else {
               this.$root.$refs.showMessageForm.openForm('error', this.sResult);
             }
-            
+            this.autoUpd = null;
           })
           .catch((error) => {
+            this.autoUpd = null;
             console.error(error)
           })
       }
      },
      editAuto() {
+        this.autoUpd = true;
         console.log('currentUser: ', this.currentUser, ' id: ', this.id, ' carname: ', this.carName)
-        
+        this.autoUpd = null;
      }
 
     },
