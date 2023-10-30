@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request, Response, status, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-from datetime import datetime
 import json
 from mysql.connector import Error
 from typing import Union
@@ -75,6 +74,8 @@ async def register(userData: UserReg, response: Response):
 
   else:
     # ошибочка
+    connection.rollback()
+    connection.close()
     return RequestError(response, res[1])
     # response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
     # errors = { 'errors': {
@@ -105,12 +106,13 @@ async def login(userData: UserLogin, response: Response):
     return userData
 
   except Error as e:
-        response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
-        errors = { 'errors': {
-            'MySQL': e #  выдает Object object ... wtf?
-          }
-        }
-        return errors
+    connection.close()
+    response.status_code = 419  # вывод ошибок, точнее формат сделать нормальным! 
+    errors = { 'errors': {
+        'MySQL': e #  выдает Object object ... wtf?
+      }
+    }
+    return errors
 
 
 @app.get("/user", status_code = 200)
@@ -131,6 +133,7 @@ async def user(response: Response, Authorization: Union[str, None] = Header(defa
       return res
 
   except Error as e:
+    connection.close()
     return RequestError(response, {'MySQL', e}, 419)
 
 
@@ -149,6 +152,7 @@ async def get_my_auto(userData: UserCheck, response: Response):
       return RequestError(response, {'MySQL', 'Token is obsolete'})
       
   except Error as e:
+      connection.close()
       return e
       
 
@@ -169,6 +173,8 @@ async def add_my_auto(userData: AddAuto, response: Response):
         return RequestError(response, {'MySQL', 'Token is obsolete'})
       
   except Error as e:
+      connection.rollback()
+      connection.close()
       return RequestError(response, {'error', e})
       
 
@@ -176,20 +182,26 @@ async def add_my_auto(userData: AddAuto, response: Response):
 async def delete_my_auto(userData: DeleteAuto, response: Response):
   try:
     if (verify_token(userData.token) & (userData.user_id != '') & (userData.id !='') ):
-      time = {'start': datetime.now()}
       connection = MysqlConnect.connectDb()  
       mycursor = connection.cursor(dictionary=True)
-      mycursor.execute("DELETE FROM auto WHERE _id=%s",(userData.id,))
-      connection.commit()
-      rowCount = mycursor.rowcount
-      connection.close()
-      if (rowCount > 0):
-        return {'deleted': True}
+      mycursor.execute("SELECT _id, user_id FROM auto WHERE _id=%s AND user_id = %s" , (userData.id, userData.user_id,))
+      res = mycursor.fetchall()
+      if (len(res) > 0):  
+        mycursor.execute("DELETE FROM auto WHERE _id=%s",(userData.id,))
+        connection.commit()
+        rowCount = mycursor.rowcount
+        connection.close()
+        if (rowCount > 0):
+          return {'deleted': True}
+        else:
+          return {'deleted': False}
       else:
-        return {'deleted': False}
+        connection.close()
+        return {'deleted': 'no_data'}
     else:
       return RequestError(response, {'MySQL', 'Token is obsolete'})
       
   except Error as e:
-      time['end'] = datetime.now()
-      return {'deleted': 'have_data', 'errors': e, 'time': time}
+      connection.rollback()
+      connection.close()
+      return {'deleted': 'have_data', 'errors': e}

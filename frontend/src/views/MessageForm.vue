@@ -28,15 +28,21 @@
     },
     methods: {
       closeForm(){
-        this.showed = '';
+        if (this.showedType == 'success') {
+          this.showed = '';
+          window.location.reload
+        }
       },
       openForm(className, text) {
         this.showedType = className;
         this.sResult = text;
         this.showed = 'dialog_open';
-        // setTimeout(() => {
-        //   this.showed = '';
-        // }, 5000);
+        setTimeout(() => {
+          if (this.showedType == 'success') {
+            this.showed = '';
+            window.location.reload;
+          }
+        }, 5000);
       }
     },
     mounted() {

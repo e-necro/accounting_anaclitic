@@ -49,9 +49,10 @@
               this.sResult = 'Готово'
             } else if (res.data.deleted == 'have_data') {
               this.sResult = "К машине привязаны ремонты. Сначала нужно их удалить";
+            } else if (res.data.deleted == 'no_data') {
+              this.sResult = 'У текущего пользователя нет авто с таким id';
             } else {
               this.sResult = 'Произошла ошибка. Попробуйте еще раз';
-              
             }
             
             if (this.sResult == 'Готово') {

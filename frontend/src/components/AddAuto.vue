@@ -7,7 +7,7 @@
           <div class="modal-body">
             <h2 class="modal-caption">Добавление автомобиля</h2>
             <div v-if="sResult !== null" class="add-auto__result"> {{ sResult }}</div>
-            <div v-else class="add-auto__cont">
+            <form v-else class="add-auto__cont">
               <label for="add-auto-name">
                 Название: 
                 <input type="text" id="auto-name" name="auto-name" v-model="name" required>
@@ -24,7 +24,7 @@
                 <button @click="closeForm">Отмена</button>
                 <button @click="saveAuto">Сохранить</button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
