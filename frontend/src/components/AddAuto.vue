@@ -41,6 +41,10 @@ export default {
     currentUser: {
       type: Object,
       required: true
+    },
+    toShow: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -52,8 +56,18 @@ export default {
       showed: ''
     }
   },
+  watch: {
+    toShow: function(newVal, ) {
+      if (newVal === true) {
+        this.showed = 'dialog_open';
+      } else {
+        this.showed = '';
+      }
+    }
+  },
   methods: {
-    saveAuto() {
+    saveAuto(e) {
+      e.preventDefault();
       if (this.name.trim() !== '' && this.comment.trim() !== '' && this.date ) {
         let oData = {}
         oData['user_id'] = this.currentUser._id
@@ -82,10 +96,14 @@ export default {
       // поменять данные родительского компонента?
       this.$emit('close-form', 'closed');
       this.showed = '';
+    },
+    openForEdit(params) {
+      this.showed = 'dialog_open';
+      console.log(params)
     }
   },
   mounted() {
-    this.showed = 'dialog_open';
+    // this.openForEdit()
   }
 }
 

@@ -1,6 +1,13 @@
 <template>
   <div class="auto-catalog">
     <h1>Каталог машин</h1>
+    <mcv-add-auto 
+      :toShow="showAddForm"
+      :current-user="currentUser"
+      @close-form="reloadPage"
+      ref="editAuto"
+    />
+
     <div v-if="autoList === null" class="auto-catalog_no-data">
       <img class="auto-catalog_list-no-data-loader" src="@/assets/img/giphy.gif">
     </div>
@@ -18,21 +25,23 @@
         <div class="item__name">{{ auto.name }}</div>
         <div class="item__comment">{{ auto.comment }}</div>
         <div class="item__date">{{ auto.date }}</div>
-        <div class="item__control"> <mcv-catalog-control :id="auto._id" :current-user="currentUser" :car-name="auto.name" ></mcv-catalog-control>
+        <div class="item__control"> 
+          <mcv-catalog-control 
+            :id="auto._id" 
+            :current-user="currentUser" 
+            :car-name="auto.name" 
+            @reload="reloadPage" 
+          ></mcv-catalog-control>
         </div>
       </div>
       <h3 v-if="!showAddForm"><a href="" @click.prevent="showForm(true)">Добавить еще машину?</a></h3>
-      <mcv-add-auto 
-        v-if="showAddForm" 
-        :current-user="currentUser"
-        @close-form="reloadPage"
-        ></mcv-add-auto>
+      
     </div>
 
     <div v-else class="auto-catalog_list-no-data-add">
       <h3 v-if="!showAddForm">Машин не нашлось. <a href="" @click.prevent="showForm(true)">Добавить?</a></h3>
       <mcv-add-auto 
-        v-if="showAddForm" 
+        :toShow="showAddForm"
         :current-user="currentUser"
         @close-form="reloadPage"
         ></mcv-add-auto>

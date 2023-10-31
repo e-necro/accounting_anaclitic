@@ -34,7 +34,8 @@
       }
     },
     methods: {
-     deleteAuto() {
+     deleteAuto(e) {
+      e.preventDefault();
       let res = confirm('Действительно хотите удалить машину ~ ' + this.carName + '~ ? \r\n (не получится если к ней уже привязаны ремонты)');
       if (res) {
         this.autoUpd = true;
@@ -57,6 +58,7 @@
             
             if (this.sResult == 'Готово') {
               this.$root.$refs.showMessageForm.openForm('success', this.sResult);
+              this.$emit('reload', 'added');
             } else {
               this.$root.$refs.showMessageForm.openForm('error', this.sResult);
             }
@@ -70,7 +72,10 @@
      },
      editAuto() {
         this.autoUpd = true;
-        console.log('currentUser: ', this.currentUser, ' id: ', this.id, ' carname: ', this.carName)
+        console.log(this.$root.$refs.showMessageForm);
+        console.log(this.$root);
+        // this.$root.$refs.editAuto.openForEdit('success');
+        // console.log('currentUser: ', this.currentUser, ' id: ', this.id, ' carname: ', this.carName)
         this.autoUpd = null;
      }
 
