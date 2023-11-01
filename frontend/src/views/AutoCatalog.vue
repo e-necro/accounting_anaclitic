@@ -5,7 +5,7 @@
       :toShow="showAddForm"
       :current-user="currentUser"
       @close-form="reloadPage"
-      ref="editAuto"
+      ref="updateAuto"
     />
 
     <div v-if="autoList === null" class="auto-catalog_no-data">
@@ -30,7 +30,8 @@
             :id="auto._id" 
             :current-user="currentUser" 
             :car-name="auto.name" 
-            @reload="reloadPage" 
+            @reload="reloadPage"
+            @edits="editItem" 
           ></mcv-catalog-control>
         </div>
       </div>
@@ -98,6 +99,22 @@ export default {
       } else {
         this.showAddForm = false; 
       }
+    },
+    editItem: function(params, resolve) {
+      if (params['ID']) {
+        // достать данные этого авто
+        let editedData = {};
+        this.autoList.forEach((element) => {
+          if (element._id === params['ID']) {
+            editedData = element;
+            return;
+          }
+        });
+        if (Object.values(editedData).length > 0 ) {
+          this.$refs.updateAuto.openForEdit(editedData, resolve)  /// возвращает результат если чо
+            // resolve(true);
+        }
+      } else resolve(false);  
     }
   },
   mounted() {

@@ -72,11 +72,18 @@
      },
      editAuto() {
         this.autoUpd = true;
-        console.log(this.$root.$refs.showMessageForm);
-        console.log(this.$root);
-        // this.$root.$refs.editAuto.openForEdit('success');
-        // console.log('currentUser: ', this.currentUser, ' id: ', this.id, ' carname: ', this.carName)
-        this.autoUpd = null;
+        let oData = {}
+        oData['ID'] = this.id;
+        let result = new Promise((resolve,) => this.$emit('edits', oData, resolve) );
+        result.then((value) => {
+          if (value == true) {
+            this.$root.$refs.showMessageForm.openForm('success', 'Данные обновлены');
+          } else {
+            this.$root.$refs.showMessageForm.openForm('error', "Что-то пошло не так, попробуйте еще раз");
+          }
+          this.autoUpd = null;    
+          this.$emit('reload', 'added');
+        })
      }
 
     },

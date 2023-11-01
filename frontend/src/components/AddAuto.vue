@@ -22,7 +22,7 @@
               </label>
               <div class="button-container">
                 <button @click="closeForm">Отмена</button>
-                <button @click="saveAuto">Сохранить</button>
+                <button @click="saveAuto" :disabled="disabled">Сохранить</button>
               </div>
             </form>
           </div>
@@ -49,11 +49,14 @@ export default {
   },
   data() {
     return {
+      disabled: false,
       name: null,
       comment: null,
       date: null,
       sResult: null,
-      showed: ''
+      showed: '',
+      resolver: null,
+      auto_id: null
     }
   },
   watch: {
@@ -68,6 +71,7 @@ export default {
   methods: {
     saveAuto(e) {
       e.preventDefault();
+      this.disabled = true;
       if (this.name.trim() !== '' && this.comment.trim() !== '' && this.date ) {
         let oData = {}
         oData['user_id'] = this.currentUser._id
@@ -76,20 +80,40 @@ export default {
         oData['comment'] = this.comment.trim()
         oData['date'] = this.date
 
-        axios.post('/add_my_auto', oData)
-          .then((res) => {
-            if (res.data._id) {
-              this.sResult = 'Успешно добавлено!'
-              this.$emit('close-form', 'added');
-              // window.location.reload()
-            } else {
-              this.sResult = "Ошибка добавления. Попробуйте еще раз"
-            }
-            
-          })
-          .catch((error) => {
-            console.error(error)
-          })
+        if (this.auto_id === null) {
+          axios.post('/add_my_auto', oData)
+            .then((res) => {
+              if (res.data._id) {
+                this.sResult = 'Успешно добавлено!'
+                this.$emit('close-form', 'added');
+                // window.location.reload()
+              } else {
+                this.sResult = "Ошибка добавления. Попробуйте еще раз"
+              }
+              
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        } else {
+          oData['auto_id'] = this.auto_id;
+          axios.post('/upd_my_auto', oData)
+            .then((res) => {
+              if (res.data._id) {
+                this.sResult = 'Данные обновлены!'
+                this.$emit('close-form', 'added');
+              } else {
+                this.sResult = "Ошибка изменения. Попробуйте еще раз"
+              }
+              
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+          this.auto_id = null;
+          this.resolver = null;
+        }
+        this.disabled = false;
       }
     },
     closeForm(){
@@ -97,9 +121,13 @@ export default {
       this.$emit('close-form', 'closed');
       this.showed = '';
     },
-    openForEdit(params) {
+    openForEdit(params, resolve) {
       this.showed = 'dialog_open';
-      console.log(params)
+      this.name = params['name'];
+      this.comment = params['comment'];
+      this.date = params['date'];
+      this.auto_id = params['_id'];
+      this.resolver = resolve;
     }
   },
   mounted() {

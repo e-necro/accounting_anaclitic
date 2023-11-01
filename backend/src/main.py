@@ -7,7 +7,7 @@ from typing import Union
 from .MysqlConnect import MysqlConnect
 
 from .lib.checker import  *
-from .lib.baseClasses import UserReg, UserLogin, UserCheck, AddAuto, DeleteAuto
+from .lib.baseClasses import UserReg, UserLogin, UserCheck, AddAuto, DeleteAuto, UpdateAuto
 from .lib.token import *
 
 
@@ -205,3 +205,33 @@ async def delete_my_auto(userData: DeleteAuto, response: Response):
       connection.rollback()
       connection.close()
       return {'deleted': 'have_data', 'errors': e}
+
+
+@app.post("/upd_my_auto", status_code = 200)
+async def upd_my_auto(userData: UpdateAuto, response: Response):
+  try:
+    # TODO: как тут с ошибкой вывалится, остается заблоченным компонент редактирования именно этой строки
+    if (verify_token(userData.token) & (userData.user_id != '') & (userData.auto_id !='') ):
+      connection = MysqlConnect.connectDb()  
+      mycursor = connection.cursor(dictionary=True)
+      mycursor.execute("SELECT _id, user_id FROM auto WHERE _id=%s AND user_id = %s" , (userData.auto_id, userData.user_id,))
+      res = mycursor.fetchall()
+      if (len(res) > 0):  
+        mycursor.execute("UPDATE auto SET name=%s, comment=%s, date_create=%s WHERE _id=%s",(userData.name, userData.comment, userData.date, userData.auto_id,))
+        connection.commit()
+        rowCount = mycursor.rowcount
+        connection.close()
+        if (rowCount > 0):
+          return {'updated': True}
+        else:
+          return {'updated': False}
+      else:
+        connection.close()
+        return {'updated': 'no_data'}
+    else:
+      return RequestError(response, {'MySQL', 'Token is obsolete'})
+      
+  except Error as e:
+      connection.rollback()
+      connection.close()
+      return {'updated': 'Can\'t update', 'errors': e}

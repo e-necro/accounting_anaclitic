@@ -33,6 +33,15 @@ class AddAuto(BaseModel):
   comment: str
   date: str
 
+class UpdateAuto(BaseModel):
+  # обновление тачки
+  user_id: str
+  token: str
+  auto_id: str
+  name: str
+  comment: str
+  date: str
+
 class DeleteAuto(BaseModel):
   # удаление тачки
   user_id: str
