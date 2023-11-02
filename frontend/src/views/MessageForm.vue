@@ -47,9 +47,9 @@
     },
     mounted() {
       // this.showed = 'dialog_open';
-      // setTimeout(() => {
-      //   this.showed = '';
-      // }, 5000);
+      setTimeout(() => {
+        this.showed = '';
+      }, 5000);
     }
   }
 

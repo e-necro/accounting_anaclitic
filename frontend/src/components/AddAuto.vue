@@ -5,20 +5,20 @@
         <div class="closing_cross" @click="closeForm"></div>
         <div class="row modal-content">
           <div class="modal-body">
-            <h2 class="modal-caption">Добавление автомобиля</h2>
+            <h2 class="modal-caption">{{ title }}</h2>
             <div v-if="sResult !== null" class="add-auto__result"> {{ sResult }}</div>
             <form v-else class="add-auto__cont">
               <label for="add-auto-name">
                 Название: 
-                <input type="text" id="auto-name" name="auto-name" v-model="name" required>
+                <input type="text" id="auto-name" name="auto-name" v-model="name" required title="Название машины не может быть пустым">
               </label>
               <label for="add-auto-comment">
                 Краткое описание: 
-                <input type="text" id="auto-comment" name="auto-comment" v-model="comment" required>
+                <input type="text" id="auto-comment" name="auto-comment" v-model="comment" required title="Добавьте описание">
               </label>
               <label for="add-auto-date">
                 Дата покупки:
-                <input type="text" id="auto-date" name="auto-date" v-model="date" required>
+                <input type="text" id="auto-date" name="auto-date" v-model="date" required title="Дата тоже нужна">
               </label>
               <div class="button-container">
                 <button @click="closeForm">Отмена</button>
@@ -42,10 +42,10 @@ export default {
       type: Object,
       required: true
     },
-    toShow: {
-      type: Boolean,
-      required: true
-    }
+    // toShow: {
+    //   type: Boolean,
+    //   required: true
+    // }
   },
   data() {
     return {
@@ -56,23 +56,24 @@ export default {
       sResult: null,
       showed: '',
       resolver: null,
-      auto_id: null
+      auto_id: null,
+      title: 'Добавление автомобиля'
     }
   },
-  watch: {
-    toShow: function(newVal, ) {
-      if (newVal === true) {
-        this.showed = 'dialog_open';
-      } else {
-        this.showed = '';
-      }
-    }
-  },
+  // watch: {
+  //   toShow: function(newVal, ) {
+  //     if (newVal === true) {
+  //       this.showed = 'dialog_open';
+  //     } else {
+  //       this.showed = '';
+  //     }
+  //   }
+  // },
   methods: {
     saveAuto(e) {
       e.preventDefault();
-      this.disabled = true;
       if (this.name.trim() !== '' && this.comment.trim() !== '' && this.date ) {
+        this.disabled = true;
         let oData = {}
         oData['user_id'] = this.currentUser._id
         oData['token'] = this.currentUser.token
@@ -99,9 +100,9 @@ export default {
           oData['auto_id'] = this.auto_id;
           axios.post('/upd_my_auto', oData)
             .then((res) => {
-              if (res.data._id) {
+              if (res.data.updated == true) {
                 this.sResult = 'Данные обновлены!'
-                this.$emit('close-form', 'added');
+                this.$emit('close-form', 'updated');
               } else {
                 this.sResult = "Ошибка изменения. Попробуйте еще раз"
               }
@@ -118,6 +119,9 @@ export default {
     },
     closeForm(){
       // поменять данные родительского компонента?
+      if (this.resolver !== null) {
+        this.resolver('cancel');
+      }
       this.$emit('close-form', 'closed');
       this.showed = '';
     },
@@ -127,12 +131,23 @@ export default {
       this.comment = params['comment'];
       this.date = params['date'];
       this.auto_id = params['_id'];
+      this.title = '';
       this.resolver = resolve;
+    },
+    openForAdd() {
+      this.showed = 'dialog_open';
+      this.name = null;
+      this.comment = null;
+      this.date = null;
+      this.auto_id = null;
+      this.title = 'Добавление автомобиля';
+      this.resolver=null
     }
   },
   mounted() {
     // this.openForEdit()
-  }
+    this.title = 'Добавление автомобиля'
+  }, 
 }
 
 </script>

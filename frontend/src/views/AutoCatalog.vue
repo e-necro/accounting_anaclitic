@@ -2,7 +2,6 @@
   <div class="auto-catalog">
     <h1>Каталог машин</h1>
     <mcv-add-auto 
-      :toShow="showAddForm"
       :current-user="currentUser"
       @close-form="reloadPage"
       ref="updateAuto"
@@ -63,7 +62,7 @@ export default {
     return {
       currentAuto: null,
       autoList: null,
-      showAddForm: false,
+      // showAddForm: false,
     }
   },
   components: {
@@ -88,11 +87,18 @@ export default {
         })
       }
     },
-    showForm(toShow) {
-      this.showAddForm = toShow
+    showForm() {
+      this.$refs.updateAuto.openForAdd();
+      // this.addedFormKey += 1
+      // this.showAddForm = toShow
+      // this.$refs.updateAuto.showed = true
     },
     reloadPage: function(param) {
       if (param == 'added') {
+        this.autoList = null;
+        this.showAddForm = false; 
+        this.getMessage(this.currentUser);
+      } else if (param == 'updated') { 
         this.autoList = null;
         this.showAddForm = false; 
         this.getMessage(this.currentUser);

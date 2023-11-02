@@ -78,11 +78,12 @@
         result.then((value) => {
           if (value == true) {
             this.$root.$refs.showMessageForm.openForm('success', 'Данные обновлены');
-          } else {
+            this.$emit('reload', 'added');
+          } else if (value == false) {
             this.$root.$refs.showMessageForm.openForm('error', "Что-то пошло не так, попробуйте еще раз");
+            this.$emit('reload', 'added');
           }
           this.autoUpd = null;    
-          this.$emit('reload', 'added');
         })
      }
 
