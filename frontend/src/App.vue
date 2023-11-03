@@ -1,6 +1,7 @@
 <template>
   <mcv-topbar/>
     <router-view/>
+    <mcv-message-form ref="showMessageForm" />
 </template>
 
 <style lang="scss">
@@ -16,13 +17,15 @@
 
 <script>
 
-import McvTopbar from '@/components/Topbar'
+import McvTopbar from './components/Topbar'
+import McvMessageForm from './views/MessageForm.vue';
 import { actionTypes } from './store/modules/auth';
 
 export default {
   name: 'McvApp',
   components: {
     McvTopbar,
+    McvMessageForm
   },
   mounted() {
     this.$store.dispatch(actionTypes.getCurrentUser)

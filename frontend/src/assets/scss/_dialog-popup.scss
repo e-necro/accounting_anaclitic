@@ -1,0 +1,182 @@
+.dialog {
+	position: fixed;
+	z-index: 9999;
+	top: 0;
+	left: 0;
+	width: 100%;
+	width: 100vw;
+	height: 100vh;
+	transition: visibility 0s linear 0.5s, opacity 0.5s linear;
+	opacity: 0;
+	visibility: hidden;
+	display: none;
+
+  &.dialog_open {
+    transition-delay: 0s;
+    opacity: 1;
+    visibility: visible;
+    display: block;
+    .dlg-wrap {
+      opacity: 1;
+      overflow: unset;
+      height: auto;
+    }
+  }
+
+  .dlg-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    width: 100vw;
+    height: 100vh;
+    cursor: pointer;
+    opacity: 0.8;
+    background: #e5e5e5;
+  }
+
+  .dlg-wrap {
+    position: relative;
+    z-index: 1;
+    display: block;
+    box-sizing: border-box;
+    margin: 0 auto;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    max-width: 490px;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.5s;
+    border-radius: 20px;
+    box-shadow: 10px 10px 29px 0 rgba(0, 0, 0, 0.07),
+      -10px -10px 20px 0 rgba(255, 255, 255, 0.22);
+    background-color: #FFF;
+  }
+
+  .closing_cross {
+    background-image: url("@/assets/img/closing-cross-black.png");
+    position: absolute;
+    background-size: contain;
+    transition: all ease 0.5s;
+    top: -25px;
+    right: -25px;
+    transform: scale(1.5);
+    width: 25px;
+    height: 25px;
+    &:hover {
+      transform: rotate(90deg);
+      cursor: pointer;
+    }
+  }
+
+  .modal-content {
+    padding: 40px 0;
+    position: relative;
+  }
+
+  .modal-caption {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.29;
+    letter-spacing: 1px;
+    text-align: left;
+    color: #353a65;
+    padding-bottom: 20px;
+    max-width: 90%;
+    margin: 0;
+    text-align: left;
+  }
+
+  .modal-body {
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 1.5;
+    letter-spacing: 0.9px;
+    text-align: center;
+    color: #353a65;
+
+    .add-auto {
+      &__cont {
+        label {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .button-container {
+          position: relative;
+          display: flex;
+          justify-content: space-evenly;
+          margin: 20px 0 0;
+        }
+      }
+    }
+  }
+
+  
+}
+
+
+@media screen and (max-width: 1024px) {
+  .dialog {
+		height: 90vh;
+		padding-bottom: 16vh;
+	}
+}
+
+@media screen and (max-width:860px) {
+  .dialog {
+    height: 100vh;
+    padding-bottom: 0;
+    .dlg-wrap {
+      max-width: 400px;
+    }
+    .modal-content {
+      padding: 40px 0;
+    }
+  }
+}
+
+@media screen and (max-width:510px) {
+  .dialog {
+    .modal-content {
+      padding: 40px 0 40px 0;
+    }
+    .dlg-wrap {
+      max-width: 95vw;
+    }
+    .modal-caption {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.17;
+      letter-spacing: 0.64px;
+      text-align: left;
+      color: #353a65;
+      padding-bottom: 30px;
+    }
+    .modal-body {
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+      font-weight: normal;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      text-align: center;
+      color: #353a65;
+      padding: 0;
+    }
+    .closing_cross {
+      background-image: url(@/assets/img/closing-cross-black.png);
+      top: 15px;
+      right: 15px;
+      position: sticky;
+      margin-left: 90%;
+    }
+  }
+}
