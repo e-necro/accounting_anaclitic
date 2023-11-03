@@ -40,6 +40,7 @@
 
     <div v-else class="auto-catalog_list-no-data-add">
       <h3 v-if="!showAddForm">Машин не нашлось. <a href="" @click.prevent="showForm(true)">Добавить?</a></h3>
+      <!-- TODO: воззможно тут баг -->
       <mcv-add-auto 
         :toShow="showAddForm"
         :current-user="currentUser"
@@ -98,7 +99,7 @@ export default {
         this.autoList = null;
         this.showAddForm = false; 
         this.getMessage(this.currentUser);
-      } else if (param == 'updated') { 
+      } else if (param == 'updated') { /// wtf?
         this.autoList = null;
         this.showAddForm = false; 
         this.getMessage(this.currentUser);

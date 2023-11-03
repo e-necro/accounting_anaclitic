@@ -102,7 +102,7 @@ export default {
             .then((res) => {
               if (res.data.updated == true) {
                 this.sResult = 'Данные обновлены!'
-                this.$emit('close-form', 'updated');
+                this.$emit('close-form', 'updated');                
               } else {
                 this.sResult = "Ошибка изменения. Попробуйте еще раз"
               }
@@ -114,6 +114,9 @@ export default {
           this.auto_id = null;
           this.resolver = null;
         }
+        setTimeout(() => {
+          this.closeForm();
+        }, 3000);
         this.disabled = false;
       }
     },
@@ -133,6 +136,7 @@ export default {
       this.auto_id = params['_id'];
       this.title = '';
       this.resolver = resolve;
+      this.sResult = null;
     },
     openForAdd() {
       this.showed = 'dialog_open';
@@ -142,6 +146,7 @@ export default {
       this.auto_id = null;
       this.title = 'Добавление автомобиля';
       this.resolver=null
+      this.sResult = null;
     }
   },
   mounted() {

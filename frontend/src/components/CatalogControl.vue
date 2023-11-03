@@ -47,7 +47,7 @@
         axios.post('/delete_my_auto', oData)
           .then((res) => {
             if (res.data.deleted == true) {
-              this.sResult = 'Готово'
+              this.sResult = 'Удалено'
             } else if (res.data.deleted == 'have_data') {
               this.sResult = "К машине привязаны ремонты. Сначала нужно их удалить";
             } else if (res.data.deleted == 'no_data') {
@@ -56,7 +56,7 @@
               this.sResult = 'Произошла ошибка. Попробуйте еще раз';
             }
             
-            if (this.sResult == 'Готово') {
+            if (this.sResult == 'Удалено') {
               this.$root.$refs.showMessageForm.openForm('success', this.sResult);
               this.$emit('reload', 'added');
             } else {
