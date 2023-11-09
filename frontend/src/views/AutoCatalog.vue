@@ -23,7 +23,7 @@
         <div class="item__number"> {{ index }} </div>
         <div class="item__name">{{ auto.name }}</div>
         <div class="item__comment">{{ auto.comment }}</div>
-        <div class="item__date">{{ auto.date }}</div>
+        <div class="item__date">{{ auto.date_create }}</div>
         <div class="item__control"> 
           <mcv-catalog-control 
             :id="auto._id" 

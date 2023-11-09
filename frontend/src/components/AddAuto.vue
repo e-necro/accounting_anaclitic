@@ -18,7 +18,7 @@
               </label>
               <label for="add-auto-date">
                 Дата покупки:
-                <input type="text" id="auto-date" name="auto-date" v-model="date" required title="Дата тоже нужна">
+                <input type="date" id="auto-date" name="auto-date" v-model="date" required title="Дата тоже нужна">
               </label>
               <div class="button-container">
                 <button @click="closeForm">Отмена</button>
@@ -57,8 +57,11 @@ export default {
       showed: '',
       resolver: null,
       auto_id: null,
-      title: 'Добавление автомобиля'
+      title: 'Добавление автомобиля',
     }
+  },
+  computed: {
+ 
   },
   // watch: {
   //   toShow: function(newVal, ) {
@@ -132,7 +135,9 @@ export default {
       this.showed = 'dialog_open';
       this.name = params['name'];
       this.comment = params['comment'];
-      this.date = params['date'];
+      if (params['date'] !== undefined) {
+        this.date = params['date'];
+      }
       this.auto_id = params['_id'];
       this.title = '';
       this.resolver = resolve;
@@ -142,7 +147,8 @@ export default {
       this.showed = 'dialog_open';
       this.name = null;
       this.comment = null;
-      this.date = null;
+      let dt = new Date().toLocaleDateString();
+      this.date = dt;
       this.auto_id = null;
       this.title = 'Добавление автомобиля';
       this.resolver=null
@@ -151,8 +157,14 @@ export default {
   },
   mounted() {
     // this.openForEdit()
-    this.title = 'Добавление автомобиля'
+    this.title = 'Добавление автомобиля';
   }, 
+  // beforeUpdate() {
+  //   if (this.date === undefined || this.date === null) {
+  //     let dt = new Date().toLocaleDateString();
+  //     this.date = dt;
+  //   }
+  // }
 }
 
 </script>
