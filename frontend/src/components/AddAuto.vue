@@ -135,8 +135,8 @@ export default {
       this.showed = 'dialog_open';
       this.name = params['name'];
       this.comment = params['comment'];
-      if (params['date'] !== undefined) {
-        this.date = params['date'];
+      if (params['date_create'] !== undefined) {
+        this.date = params['date_create'];
       }
       this.auto_id = params['_id'];
       this.title = '';
@@ -147,7 +147,7 @@ export default {
       this.showed = 'dialog_open';
       this.name = null;
       this.comment = null;
-      let dt = new Date().toLocaleDateString();
+      let dt = new Date().toISOString().slice(0,10);
       this.date = dt;
       this.auto_id = null;
       this.title = 'Добавление автомобиля';
