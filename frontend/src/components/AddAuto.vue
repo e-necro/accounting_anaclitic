@@ -7,7 +7,7 @@
           <div class="modal-body">
             <h2 class="modal-caption">{{ title }}</h2>
             <div v-if="sResult !== null" class="add-auto__result"> {{ sResult }}</div>
-            <form v-else class="add-auto__cont">
+            <form v-else class="add-auto__cont" action="javascript:void(0);">
               <label for="add-auto-name">
                 Название: 
                 <input type="text" id="auto-name" name="auto-name" v-model="name" required title="Название машины не может быть пустым">
@@ -75,8 +75,8 @@ export default {
   methods: {
     saveAuto(e) {
       e.preventDefault();
+      this.disabled = true;
       if (this.name.trim() !== '' && this.comment.trim() !== '' && this.date ) {
-        this.disabled = true;
         let oData = {}
         oData['user_id'] = this.currentUser._id
         oData['token'] = this.currentUser.token
@@ -104,12 +104,11 @@ export default {
           axios.post('/upd_my_auto', oData)
             .then((res) => {
               if (res.data.updated == true) {
-                this.sResult = 'Данные обновлены!'
-                this.$emit('close-form', 'updated');                
+                this.sResult = 'Данные обновлены!'             
               } else {
-                this.sResult = "Ошибка изменения. Попробуйте еще раз"
+                this.sResult = "Данные не изменены. Те же самые? Попробуйте еще раз"
               }
-              
+              this.$emit('close-form', 'updated');   
             })
             .catch((error) => {
               console.error(error)
@@ -159,12 +158,6 @@ export default {
     // this.openForEdit()
     this.title = 'Добавление автомобиля';
   }, 
-  // beforeUpdate() {
-  //   if (this.date === undefined || this.date === null) {
-  //     let dt = new Date().toLocaleDateString();
-  //     this.date = dt;
-  //   }
-  // }
 }
 
 </script>
