@@ -34,7 +34,7 @@
           ></mcv-catalog-control>
         </div>
       </div>
-      <h3 v-if="!showAddForm"><a href="" @click.prevent="showForm(true)">Добавить еще машину?</a></h3>
+      <h4 v-if="!showAddForm"  class="auto-catalog_list-add-link"><a href="" @click.prevent="showForm(true)">Добавить еще машину?</a></h4>
       
     </div>
 
