@@ -19,20 +19,25 @@
         <div class="item__date"> Дата покупки</div>
         <div class="item__control"></div>
       </div>
-      <div class="item" v-for="(auto, index) in autoList" :key="auto._id" :data-id="auto._id">
-        <div class="item__number"> {{ index }} </div>
-        <div class="item__name">{{ auto.name }}</div>
-        <div class="item__comment">{{ auto.comment }}</div>
-        <div class="item__date">{{ auto.date_create }}</div>
-        <div class="item__control"> 
-          <mcv-catalog-control 
-            :id="auto._id" 
-            :current-user="currentUser" 
-            :car-name="auto.name" 
-            @reload="reloadPage"
-            @edits="editItem" 
-          ></mcv-catalog-control>
-        </div>
+      <div v-for="(auto, index) in autoList" :key="auto._id" :data-id="auto._id">
+        <router-link
+          :to="{name: 'remonts', params: {slug: auto._id}}"
+          class="item"
+        >
+          <div class="item__number"> {{ index }} </div>
+          <div class="item__name">{{ auto.name }}</div>
+          <div class="item__comment">{{ auto.comment }}</div>
+          <div class="item__date">{{ auto.date_create }}</div>
+          <div class="item__control"> 
+            <mcv-catalog-control 
+              :id="auto._id" 
+              :current-user="currentUser" 
+              :car-name="auto.name" 
+              @reload="reloadPage"
+              @edits="editItem" 
+            ></mcv-catalog-control>
+          </div>
+        </router-link>
       </div>
       <h4 v-if="!showAddForm"  class="auto-catalog_list-add-link"><a href="" @click.prevent="showForm(true)">Добавить еще машину?</a></h4>
       

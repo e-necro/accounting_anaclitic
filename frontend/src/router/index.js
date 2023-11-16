@@ -5,6 +5,7 @@ import Login from '@/views/Login'
 import NotFound from '@/views/NotFound'
 import AutoCatalog from '@/views/AutoCatalog'
 import UserProfile from '@/views/UserProfile'
+import Remonts from '@/components/Remonts'
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/user-profile',
     name: 'userProfile',
     component: UserProfile
+  },
+  {
+    path: '/remonts/:slug',
+    name: 'remonts',
+    component: Remonts
   },
   { 
     path: '/:pathMatch(.*)*', 
