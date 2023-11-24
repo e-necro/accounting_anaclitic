@@ -24,6 +24,7 @@ class UserCheck(BaseModel):
 # для проверки токена юзера.
   user_id: str
   token: str
+  auto_id: str
 
 class AddAuto(BaseModel):
   # добавление тачки

@@ -130,7 +130,6 @@ export default {
     }
   },
   mounted() {
-    this.ii = 0;
     let $this = this;
     (function myLoop(i) {
       setTimeout(function() {

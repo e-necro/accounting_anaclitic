@@ -144,7 +144,10 @@ async def get_my_auto(userData: UserCheck, response: Response):
     if (verify_token(userData.token) & (userData.user_id != '') ):
       connection = MysqlConnect.connectDb()  
       mycursor = connection.cursor(dictionary=True)
-      mycursor.execute("SELECT * FROM auto WHERE user_id = %s", (userData.user_id,))
+      if (userData.auto_id !=''):
+        mycursor.execute("SELECT * FROM auto WHERE user_id = %s AND _id = %s", (userData.user_id, userData.auto_id,))  
+      else:  
+        mycursor.execute("SELECT * FROM auto WHERE user_id = %s", (userData.user_id,))
       res = mycursor.fetchall()
       connection.close()
       return res
