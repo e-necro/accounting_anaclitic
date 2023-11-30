@@ -1,18 +1,58 @@
-.auto_descr {
-  &.loaded {
-    text-align: left;
-  }
-  &-no-data-loader {
-      display: block;
-      margin: 10px auto;
-      max-height: 50px;
-  }
+.auto {
+  &_descr {
+    &.loaded {
+      text-align: left;
+    }
+    &-no-data-loader {
+        display: block;
+        margin: 10px auto;
+        max-height: 50px;
+    }
 
-  &--text {
-    padding-left: 1rem;
-    &:before {
-      content: ' - ';
+    &--text {
+      padding-left: 1rem;
+      &:before {
+        content: ' - ';
 
+      }
+    }
+  }
+  &_remonts {
+    .item {
+      display: flex;
+      justify-content: flex-start;
+      div {
+        flex-grow: 1;
+        text-align: center;
+        // width: 100%;
+        border: 1px solid black;
+        border-top: none;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+      }
+      &:first-child {
+        border-top: 1px solid black;
+      }
+      &-title {
+        font-weight: 700;
+        border-top: 1px solid black;
+      }
+      &__number {
+        width: 10%;
+      }
+      &__name {
+        width: 30%;
+      }
+      &__comment {
+        width: 30%;
+      }
+      &__date {
+        width: 15%;
+      }
+      &__control {
+        width: 15%;
+      }
     }
   }
 }

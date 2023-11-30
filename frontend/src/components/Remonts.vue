@@ -20,9 +20,47 @@
               {{ autoList[0].comment }}
             </div>
             <div class="auto_desc--text_dt" v-if="autoList[0].date_create !== null">
-              {{ autoList[0].date_create }} 
+              Куплена {{ autoList[0].date_create }} 
             </div>
             <hr>
+          </div>
+
+          <div v-if="remontList === null && autoList !== null" class="auto_descr">
+            <img class="auto_descr-no-data-loader" src="@/assets/img/giphy.gif">
+          </div>
+          <div v-else-if="remontList !== null  &&  remontList.length !== 0 && autoList !== null" class="auto_remonts">
+              <h3>Список ремонтов:</h3>
+              <div class="item item-title">
+                <div class="item__number">№</div>
+                <div class="item__name">Название</div>
+                <div class="item__comment">Описание</div>
+                <div class="item__price">Цена</div>
+                <div class="item__date">Дата начала ремонта</div>
+                <div class="item__date">Дата окончания ремонта</div>
+                <div class="item__elapced-time">Примерное время работ(часы)</div>
+                <div class="item__control"></div>
+              </div>
+              <div v-for="(remont, index) in remontList" :key="remont._id" :data-id="remont._id" class="item">
+                  <div class="item__number"> {{ index }} </div>
+                  <div class="item__name">{{ remont.name }}</div>
+                  <div class="item__comment">{{ remont.comment }}</div>
+                  <div class="item__price">{{ remont.price }}</div>
+                  <div class="item__date">{{ remont.start_date }}</div>
+                  <div class="item__date">{{ remont.end_date }}</div>
+                  <div class="item__elapced-time">{{ remont.elapced_time }}</div>
+                  <div class="item__control"> 
+                    <!-- <mcv-catalog-control 
+                      :id="auto._id" 
+                      :current-user="currentUser" 
+                      :car-name="auto.name" 
+                      @reload="reloadPage"
+                      @edits="editItem" 
+                    ></mcv-catalog-control> -->
+                  </div>
+              </div>
+          </div>
+          <div v-else-if='autoList !== null'>
+            Нету ремонтиков. Добавить ссылку на форму
           </div>
 
 
@@ -76,6 +114,9 @@ export default ({
         axios.post('/get_my_auto',{user_id: user._id, token: user.token, auto_id: slug})
         .then((res) => {
           this.autoList = res.data 
+          if (this.autoList !== null) {
+            this.getAutoRemonts(user, slug)
+          }
         })
         .catch((error) => {
           console.error(error)
@@ -86,6 +127,7 @@ export default ({
       axios.post('/get_my_remonts',{user_id: user._id, token: user.token, auto_id: slug})
         .then((res) => {
           this.remontList = res.data 
+          console.log(this.remontList)
         })
         .catch((error) => {
           console.error(error)
