@@ -1,0 +1,18 @@
+.auto_descr {
+  &.loaded {
+    text-align: left;
+  }
+  &-no-data-loader {
+      display: block;
+      margin: 10px auto;
+      max-height: 50px;
+  }
+
+  &--text {
+    padding-left: 1rem;
+    &:before {
+      content: ' - ';
+
+    }
+  }
+}

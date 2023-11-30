@@ -24,7 +24,7 @@ const routes = [
     component: Login
   },
   {
-    path: '/auto-catalog',
+    path: '/auto-catalog/',
     name: 'auto-catalog',
     component: AutoCatalog
   },

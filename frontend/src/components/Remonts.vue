@@ -1,15 +1,32 @@
 <template>
   <div class="lk-page">
     <div class="container page">
-      <div class="row">
         <h1>Remonts</h1>
+        <a class="rollback-link" @click="$router.go(-1)"> Назад</a>
           <mcv-validation-errors 
             v-if="validationErrors" 
             :validation-errors = "validationErrors" 
           />
 
+          <div v-if="autoList === null" class="auto_descr">
+            <img class="auto_descr-no-data-loader" src="@/assets/img/giphy.gif">
+          </div>
 
-        </div>
+          <div v-else-if="autoList.length !== 0" class="auto_descr" :class="{loaded : autoList.length !== 0 }">
+            <h3 class="auto_descr--title">
+              {{ autoList[0].name }}
+            </h3>
+            <div class="auto_descr--text">
+              {{ autoList[0].comment }}
+            </div>
+            <div class="auto_desc--text_dt" v-if="autoList[0].date_create !== null">
+              {{ autoList[0].date_create }} 
+            </div>
+            <hr>
+          </div>
+
+
+
       </div>
     </div>
 </template>
@@ -18,14 +35,15 @@
 import {mapState} from 'vuex'
 
 import McvValidationErrors from '@/components/ValidationErrors'
-import { actionTypes, getterTypes } from '@/store/modules/auth'
+import {  getterTypes } from '@/store/modules/auth' //actionTypes
 import axios from 'axios'
 
 export default ({
   name: 'McvRemonts',
   data() {
     return {
-      autoList: null
+      autoList: null,
+      remontList: null,
     }
   },
   components: {
@@ -57,13 +75,21 @@ export default ({
       if (user !== null) {
         axios.post('/get_my_auto',{user_id: user._id, token: user.token, auto_id: slug})
         .then((res) => {
-          console.log(res)
-          this.autoList = res.data /// TODO: херится autoList почему-то. Не всегда доступен. Или это в плагине проблема отображения?
+          this.autoList = res.data 
         })
         .catch((error) => {
           console.error(error)
         })
       }
+    },
+    getAutoRemonts(user, slug) {
+      axios.post('/get_my_remonts',{user_id: user._id, token: user.token, auto_id: slug})
+        .then((res) => {
+          this.remontList = res.data 
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
   }
 })

@@ -1,0 +1,17 @@
+.rollback-link {
+  text-align: left;
+  display: block;
+  text-decoration: none;
+  &::before {
+    content: ' <-- ';
+    transition: all ease .5s;
+  }
+  &:hover {
+    cursor: pointer;
+    text-decoration: none;
+    &:before {
+      margin-left: -5px;
+      margin-right: 5px;
+    }
+  }
+}

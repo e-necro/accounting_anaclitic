@@ -84,7 +84,7 @@ export default {
   methods: { 
     getMessage(user) {
       if (user !== null) {
-        axios.post('/get_my_auto',{user_id: user._id, token: user.token})
+        axios.post('/get_my_auto',{user_id: user._id, token: user.token, auto_id: ''}) /// если добавил во входящий класс поле, то оно обязано ыбть передано
         .then((res) => {
           this.autoList = res.data
         })
