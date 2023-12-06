@@ -48,3 +48,10 @@ class DeleteAuto(BaseModel):
   user_id: str
   token: str
   id: int
+
+class DeleteRemont(BaseModel):
+  # удаление строки ремонта
+  user_id: str
+  token: str
+  id: int
+  auto_id: str

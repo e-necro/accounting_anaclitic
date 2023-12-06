@@ -31,7 +31,7 @@
         if (this.showedType == 'success') {
           this.showed = '';
           window.location.reload
-        }
+        } 
       },
       openForm(className, text) {
         this.showedType = className;

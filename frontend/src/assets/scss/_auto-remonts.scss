@@ -22,9 +22,9 @@
       display: flex;
       justify-content: flex-start;
       div {
-        flex-grow: 1;
+        flex-grow: 2;
         text-align: center;
-        // width: 100%;
+        flex-basis: 20px;
         border: 1px solid black;
         border-top: none;
         justify-content: center;
@@ -39,19 +39,22 @@
         border-top: 1px solid black;
       }
       &__number {
-        width: 10%;
+        // width: 10%;
+        flex-grow: 1!important;
       }
       &__name {
-        width: 30%;
+        // width: 30%;
+        flex-grow: 3!important;
       }
       &__comment {
-        width: 30%;
+        // width: 30%;
+        flex-grow: 3!important;
       }
       &__date {
-        width: 15%;
+        // width: 15%;
       }
       &__control {
-        width: 15%;
+        // width: 15%;
       }
     }
   }

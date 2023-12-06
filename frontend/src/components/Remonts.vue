@@ -49,13 +49,14 @@
                   <div class="item__date">{{ remont.end_date }}</div>
                   <div class="item__elapced-time">{{ remont.elapced_time }}</div>
                   <div class="item__control"> 
-                    <!-- <mcv-catalog-control 
-                      :id="auto._id" 
+                    <mcv-remont-control 
+                      :id="remont._id" 
+                      :auto-id="autoList[0]._id"
                       :current-user="currentUser" 
-                      :car-name="auto.name" 
+                      :remont-name="remont.name" 
                       @reload="reloadPage"
                       @edits="editItem" 
-                    ></mcv-catalog-control> -->
+                    ></mcv-remont-control>
                   </div>
               </div>
           </div>
@@ -73,6 +74,8 @@
 import {mapState} from 'vuex'
 
 import McvValidationErrors from '@/components/ValidationErrors'
+import McvRemontControl from '@/components/RemontControl'
+
 import {  getterTypes } from '@/store/modules/auth' //actionTypes
 import axios from 'axios'
 
@@ -82,10 +85,12 @@ export default ({
     return {
       autoList: null,
       remontList: null,
+      currentUser: null
     }
   },
   components: {
     McvValidationErrors,
+    McvRemontControl
   },
   computed: {
     ...mapState({
@@ -99,9 +104,9 @@ export default ({
     let $this = this;
     (function myLoop(i) {
       setTimeout(function() {
-        let user =  $this.$store.getters[getterTypes.currentUser];
-        if (user !== null) {
-          $this.getAuto(user, $this.$route.params.slug)   
+        $this.currentUser =  $this.$store.getters[getterTypes.currentUser];
+        if ($this.currentUser !== null) {
+          $this.getAuto($this.currentUser, $this.$route.params.slug)   
           return 1
         }
         if (--i) myLoop(i);
@@ -127,7 +132,7 @@ export default ({
       axios.post('/get_my_remonts',{user_id: user._id, token: user.token, auto_id: slug})
         .then((res) => {
           this.remontList = res.data 
-          console.log(this.remontList)
+          // console.log(this.remontList)
         })
         .catch((error) => {
           console.error(error)
