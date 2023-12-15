@@ -22,6 +22,13 @@
             <div class="auto_desc--text_dt" v-if="autoList[0].date_create !== null">
               Куплена {{ autoList[0].date_create }} 
             </div>
+            <br/>
+            <mcv-add-remont 
+              :current-user="currentUser"
+              :auto_id="autoList[0]._id"
+              @close-form="reloadPage"
+              ref="addRemont"
+            />
             <hr>
           </div>
 
@@ -61,7 +68,7 @@
               </div>
           </div>
           <div v-else-if='autoList !== null'>
-            Нету ремонтиков. Добавить ссылку на форму
+            <h3 v-if="!showAddForm">Ремонтов не нашлось. <a href="" @click.prevent="showForm(true)">Добавить?</a></h3>
           </div>
 
 
@@ -75,6 +82,7 @@ import {mapState} from 'vuex'
 
 import McvValidationErrors from '@/components/ValidationErrors'
 import McvRemontControl from '@/components/RemontControl'
+import McvAddRemont from '@/components/RemontAdd'
 
 import {  getterTypes } from '@/store/modules/auth' //actionTypes
 import axios from 'axios'
@@ -85,12 +93,14 @@ export default ({
     return {
       autoList: null,
       remontList: null,
-      currentUser: null
+      currentUser: null,
+      showAddForm: null
     }
   },
   components: {
     McvValidationErrors,
-    McvRemontControl
+    McvRemontControl,
+    McvAddRemont
   },
   computed: {
     ...mapState({
@@ -114,6 +124,9 @@ export default ({
     })(20);
   },
   methods: {
+    showForm() {
+      this.$refs.addRemont.openForAdd();
+    },
     getAuto(user, slug) {
       if (user !== null) {
         axios.post('/get_my_auto',{user_id: user._id, token: user.token, auto_id: slug})
