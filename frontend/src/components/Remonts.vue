@@ -137,6 +137,10 @@ export default ({
         .catch((error) => {
           console.error(error)
         })
+    },
+    reloadPage(params) {
+      // params[0] == 'deleted' и чего с ней делать?
+      this.getAutoRemonts(this.currentUser, params[1])
     }
   }
 })

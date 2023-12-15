@@ -49,7 +49,7 @@ async def delete_my_remont(userData: DeleteRemont, response: Response):
           res = mycursor.fetchall()
           if (len(res) == 0):
             # все пусто, можно удалять
-            mycursor.execute("DELETE FROM auto_cat WHERE category_id=%s AND auto_id = %s",(userData.id, userData.auto_id))
+            mycursor.execute("DELETE FROM categories WHERE _id = %s LIMIT 1",(userData.id, )) 
             connection.commit()
             rowCount = mycursor.rowcount
             connection.close()

@@ -55,7 +55,7 @@ export default {
             this.sResult = 'Удалено'
           } else if (res.data.deleted == 'have_data') {
             /// TODO: вот тут бы видеть эти дочерние ремонты. А как их отображать-то?
-            this.sResult = "К привязаны дочерние ремонты. Сначала нужно их удалить";
+            this.sResult = "К ремонту привязаны дочерние ремонты. Сначала нужно их удалить";
           } else if (res.data.deleted == 'no_data') {
             this.sResult = 'У текущего пользователя нет ремонта с таким id';
           } else {
@@ -64,7 +64,7 @@ export default {
           
           if (this.sResult == 'Удалено') {
             this.$root.$refs.showMessageForm.openForm('success', this.sResult);
-            this.$emit('reload', 'added');
+            this.$emit('reload', ['deleted', this.autoId ]); 
           } else {
             this.$root.$refs.showMessageForm.openForm('error', this.sResult);
           }
