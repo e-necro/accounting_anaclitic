@@ -1,0 +1,12 @@
+.add-remont {
+  label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    input {
+      width: 98%;
+      margin-left: 2%;
+    }
+  }
+}
