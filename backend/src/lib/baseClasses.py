@@ -55,3 +55,19 @@ class DeleteRemont(BaseModel):
   token: str
   id: int
   auto_id: str
+
+class AddRemont(BaseModel):
+  # добавление строки ремонта
+  user_id: str
+  token: str
+  auto_id: str
+  name: str
+  comment: str
+  parent_id: int
+  top_parent_id: int
+  level: int
+  price: float
+  elapced_time: int
+  start_date: str
+  end_date: str
+  

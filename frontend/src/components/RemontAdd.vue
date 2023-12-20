@@ -12,10 +12,11 @@
                 Название: 
                 <input type="text" id="remont-name" name="remont-name" v-model="remont_name" required title="Название ремонта не может быть пустым">
               </label>
-              <label for="add-remont-parent">
-                Есть ли родительский ремонт? <br/>
-                <small>(н-р, замена тормозных колодок относится к ремонту колеса, которая в свою очередь относится к ремонту ходовки и т.д. Смотря что уже было добавлено.) </small>
-                НЕ обязательно<br/>
+              <label for="add-remont-parent" >
+                  <p data-tooltip="н-р, замена тормозных колодок относится к ремонту колеса, которая в свою очередь относится к ремонту ходовки и т.д. Смотря что уже было добавлено.">
+                    Есть ли родительский ремонт? <br/>
+                    НЕ обязательно<br/>
+                  </p>
                 <input type="text" id="remont-parent-id" name="remont-parent-id" v-model="remont_parent_id" required title="Добавьте описание">
               </label>
               <label for="add-remont-start_date">
@@ -28,7 +29,7 @@
               </label>
               <label for="add-remont-end_date">
                 Примерное затраченное время(сколько часов):
-                <input type="number" min="1" max="1000" id="remont-elapced-time" name="remont-elapced-time" v-model="remont_elapced_time"  title="">
+                <input type="number" min="1" max="1000" id="remont-elapced-time" name="remont-elapced-time" v-model="remont_elapced_time"  title="1">
               </label>
               <label for="add-remont-price">
                 Затраченная сумма:
@@ -52,7 +53,7 @@
 <script>
 
 import axios from 'axios'
-// TODO: прицепить календарь!! 
+
 export default {
   name: "McvRemontAdd",
   props: {
@@ -92,7 +93,7 @@ export default {
  
   },
   methods: {
-    saveAuto(e) {
+    saveRemont(e) {
       e.preventDefault();
       this.disabled = true;
       // TODO: если будет родитель выбран, то на бэке рассчитать top_parent_id и level
@@ -102,7 +103,10 @@ export default {
         oData['token'] = this.currentUser.token
         oData['name'] = this.remont_name.trim()
         oData['comment'] = this.remont_comment.trim()
-        oData['parent_id'] = this.remont_parent_id /// TODO: херня! разобрать как именно он тут будет
+        oData['parent_id'] = 0 //this.remont_parent_id /// TODO: херня! разобрать как именно он тут будет
+        oData['top_parent_id'] = 0 ///TODO: тоже нихрена не рассчитано
+        oData['level'] = 0 ///TODO: тоже нихрена не рассчитано
+        oData['price'] = this.remont_price
         oData['start_date'] = this.start_date
         oData['end_date'] = this.end_date
         oData['elapced_time'] = this.remont_elapced_time
@@ -111,6 +115,9 @@ export default {
         oData['auto_id'] = this.auto_id;
         axios.post('/add_my_remont', oData)
           .then((res) => {/// TODO: дальше не делано
+            /*
+            * Добавляются данные, но нет parent_id и тд. так же проверки успешности добавления нету. ну и поведение формы проверить тоже
+            */
             if (res.data.updated == true) {
               this.sResult = 'Данные обновлены!'             
             } else {

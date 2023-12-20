@@ -15,3 +15,25 @@
     }
   }
 }
+
+[data-tooltip]::before {
+  position : absolute;
+  content : attr(data-tooltip);
+  opacity : 0;
+  background: #7f8081; 
+  color: #fff; 
+  padding: 0.5em; 
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+  pointer-events: none; 
+  transition: 1s; 
+  // top: 1em;
+  font-size: .7rem;
+}
+
+[data-tooltip]:hover::before {
+  opacity : 1;
+}
+
+[data-tooltip]:not([data-tooltip-persistent])::before {
+  pointer-events: none;
+}
