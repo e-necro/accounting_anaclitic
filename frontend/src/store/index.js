@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import auth from '@/store/modules/auth'
+import { categories } from '@/store/modules/remonts'
 
 
 
@@ -13,6 +14,7 @@ export default createStore({
   actions: {
   },
   modules: {
-    auth
+    auth,
+    categories
   }
 })

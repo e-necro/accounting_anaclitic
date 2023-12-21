@@ -16,12 +16,17 @@ router = APIRouter()
 async def get_my_remonts(userData: UserCheck, response: Response):
   try:
     if (verify_token(userData.token) & (userData.user_id != '') ):
-      connection = MysqlConnect.connectDb()  
-      mycursor = connection.cursor(dictionary=True)
+      res = {}
       if (userData.auto_id !=''):
-        mycursor.execute("SELECT * FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY start_date, level desc", (userData.auto_id, userData.user_id))   
-      res = mycursor.fetchall()
-      connection.close()
+        connection = MysqlConnect.connectDb()  
+        mycursor = connection.cursor(dictionary=True)
+        mycursor.execute("SELECT * FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY level desc", (userData.auto_id, userData.user_id))   
+        res['categories'] = mycursor.fetchall()
+
+        mycursor.execute(" SELECT * FROM remonts WHERE _id in (SELECT _id FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s))) ORDER BY start_date desc", (userData.auto_id, userData.user_id)) 
+        res['remonts'] = mycursor.fetchall()
+
+        connection.close()
       return res
     else:
       return RequestError(response, {'MySQL', 'Token is obsolete'})
@@ -64,7 +69,7 @@ async def delete_my_remont(userData: DeleteRemont, response: Response):
 
 
 @router.post("/add_my_remont", status_code = 200)
-async def get_my_remonts(remontData: AddRemont, response: Response):
+async def add_my_remont(remontData: AddRemont, response: Response):
   try:
     if (verify_token(remontData.token) & (remontData.user_id != '') ):
       if (remontData.auto_id !='') & (remontData.name !='') & (remontData.price != 0 ):
