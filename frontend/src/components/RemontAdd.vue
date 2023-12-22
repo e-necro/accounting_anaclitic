@@ -17,7 +17,7 @@
                     Есть ли родительский ремонт? <br/>
                     НЕ обязательно<br/>
                   </p>
-                <input type="text" id="remont-parent-id" name="remont-parent-id" v-model="remont_parent_id" required title="Добавьте описание">
+                <div v-html=" remont_category_html " ></div>
               </label>
               <label for="add-remont-start_date">
                 Дата начала ремонта:
@@ -75,7 +75,8 @@ export default {
       disabled: false,
       remont_name: null,
       remont_comment: null,
-      remont_parent_id: null,
+      remont_category_id: null,
+      remont_category_html: '',
       remont_price: null,
       remont_elapced_time: null,
       start_date: null,
@@ -103,9 +104,7 @@ export default {
         oData['token'] = this.currentUser.token
         oData['name'] = this.remont_name.trim()
         oData['comment'] = this.remont_comment.trim()
-        oData['parent_id'] = 0 //this.remont_parent_id /// TODO: херня! разобрать как именно он тут будет
-        oData['top_parent_id'] = 0 ///TODO: тоже нихрена не рассчитано
-        oData['level'] = 0 ///TODO: тоже нихрена не рассчитано
+        oData['category_id'] = this.remont_category_id
         oData['price'] = this.remont_price
         oData['start_date'] = this.start_date
         oData['end_date'] = this.end_date
@@ -163,14 +162,18 @@ export default {
       let dt = new Date().toISOString().slice(0,10);
       this.date = dt;
       // this.auto_id = null;
-      this.title = 'Добавление ремонта';
+      // this.title = 'Добавление ремонта'; тупо чтоб не светилось
       this.resolver=null
       this.sResult = null;
     }
   },
   mounted() {
+    console.log(this.$store)
     // this.openForEdit()
-    this.title = 'Добавить ремонт';
+    // this.title = 'Добавить ремонт';
+    if (this.$store.categories) {
+      this.remont_category_html = this.$store.categories
+    }
   }, 
 }
 

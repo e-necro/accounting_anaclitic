@@ -61,11 +61,9 @@ class AddRemont(BaseModel):
   user_id: str
   token: str
   auto_id: str
+  category_id: str
   name: str
   comment: str
-  parent_id: int
-  top_parent_id: int
-  level: int
   price: float
   elapced_time: int
   start_date: str

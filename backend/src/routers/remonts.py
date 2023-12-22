@@ -20,8 +20,17 @@ async def get_my_remonts(userData: UserCheck, response: Response):
       if (userData.auto_id !=''):
         connection = MysqlConnect.connectDb()  
         mycursor = connection.cursor(dictionary=True)
-        mycursor.execute("SELECT * FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY level desc", (userData.auto_id, userData.user_id))   
-        res['categories'] = mycursor.fetchall()
+        mycursor.execute("SELECT * FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY level, parent_id ASC", (userData.auto_id, userData.user_id))   
+        tmp_categories = mycursor.fetchall()
+        new_categs = {}
+        for row in tmp_categories :
+          if row['parent_id'] not in new_categs:
+            new_categs[row['parent_id']] = {}
+            new_categs[row['parent_id']][row['_id']] = row
+          else:
+            new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
+
+        res['categories'] = new_categs
 
         mycursor.execute(" SELECT * FROM remonts WHERE _id in (SELECT _id FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s))) ORDER BY start_date desc", (userData.auto_id, userData.user_id)) 
         res['remonts'] = mycursor.fetchall()
@@ -70,23 +79,19 @@ async def delete_my_remont(userData: DeleteRemont, response: Response):
 
 @router.post("/add_my_remont", status_code = 200)
 async def add_my_remont(remontData: AddRemont, response: Response):
-  try:
+  try: #TODO: еще не проверено
     if (verify_token(remontData.token) & (remontData.user_id != '') ):
-      if (remontData.auto_id !='') & (remontData.name !='') & (remontData.price != 0 ):
+      if (remontData.auto_id != '') & (remontData.name !='') & (remontData.price != 0 ) & (remontData.category_id != ''):
         connection = MysqlConnect.connectDb()  
         mycursor = connection.cursor(dictionary=True)
-        mycursor.execute("INSERT INTO categories ( name, comment, parent_id, top_parent_id, level, price, elapced_time, start_date, end_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (remontData.name, remontData.comment, remontData.parent_id, remontData.top_parent_id, remontData.level, remontData.price, remontData.elapced_time, remontData.start_date, remontData.end_date ))   
+        mycursor.execute("INSERT INTO remonts ( name, comment, category_id, price, elapced_time, start_date, end_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (remontData.name, remontData.comment, remontData.category_id, remontData.price, remontData.elapced_time, remontData.start_date, remontData.end_date ))   
         connection.commit()
         _id = 0
-        _id2 = 0
         _id = mycursor.lastrowid
-        if (_id != 0):
-          # связь меж категориями ремонтов и тачками
-          mycursor.execute('INSERT INTO auto_cat (auto_id, category_id) VALUES (%s, %s)', (remontData.auto_id, _id))
-          connection.commit()
-          _id2 = mycursor.lastrowid
         connection.close()
-      return [_id, _id2]
+        return _id
+      else:
+        return RequestError(response, {'MySQL', 'Wrong auto_id or name or price or category_id. Check them.'})
     else:
       return RequestError(response, {'MySQL', 'Token is obsolete'})
       
