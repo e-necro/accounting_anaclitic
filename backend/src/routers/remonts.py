@@ -1,4 +1,5 @@
 from fastapi import APIRouter, FastAPI, Request, Response, status, HTTPException, Header
+import copy
 
 from ..lib.checker import  *
 from ..lib.baseClasses import  UserCheck, DeleteRemont, AddRemont
@@ -28,8 +29,9 @@ async def get_my_remonts(userData: UserCheck, response: Response):
           new_categs[row['_id']] = row
           # if (key == 0):
           #   key = row['_id']
-        resultTree = createTree(new_categs)
-
+        resultTree = copy.deepcopy(new_categs)
+        # resultTree = createTree(new_categs)
+        res['categories'] = resultTree
 
         for row in tmp_categories :
           if row['parent_id'] not in new_categs:
@@ -37,8 +39,8 @@ async def get_my_remonts(userData: UserCheck, response: Response):
             new_categs[row['parent_id']][row['_id']] = row
           else:
             new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
-        res['tmp_categories'] = tmp_categories
-        res['categories'] = resultTree
+        # res['tmp_categories'] = tmp_categories
+        
 
         mycursor.execute(" SELECT * FROM remonts WHERE _id in (SELECT _id FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s))) ORDER BY start_date desc", (userData.auto_id, userData.user_id)) 
         res['remonts'] = mycursor.fetchall()
