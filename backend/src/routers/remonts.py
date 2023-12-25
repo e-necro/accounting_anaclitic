@@ -23,14 +23,22 @@ async def get_my_remonts(userData: UserCheck, response: Response):
         mycursor.execute("SELECT * FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY level, parent_id ASC", (userData.auto_id, userData.user_id))   
         tmp_categories = mycursor.fetchall()
         new_categs = {}
+        key = 0
+        for row in tmp_categories:
+          new_categs[row['_id']] = row
+          # if (key == 0):
+          #   key = row['_id']
+        resultTree = createTree(new_categs)
+
+
         for row in tmp_categories :
           if row['parent_id'] not in new_categs:
             new_categs[row['parent_id']] = {}
             new_categs[row['parent_id']][row['_id']] = row
           else:
             new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
-
-        res['categories'] = new_categs
+        res['tmp_categories'] = tmp_categories
+        res['categories'] = resultTree
 
         mycursor.execute(" SELECT * FROM remonts WHERE _id in (SELECT _id FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s))) ORDER BY start_date desc", (userData.auto_id, userData.user_id)) 
         res['remonts'] = mycursor.fetchall()
@@ -43,6 +51,17 @@ async def get_my_remonts(userData: UserCheck, response: Response):
   except Error as e:
       connection.close()
       return e
+
+def createTree(listItems):
+  tree = {}
+  for k, v in listItems.items():
+    if (v['parent_id'] == 0):
+      tree[v['_id']] = v
+    else:
+      pass # походу рисовать придется...
+    # for node in v:
+    # if v['_id'] not in 
+  return tree
 
 
 @router.post("/delete_my_remont", status_code = 200)

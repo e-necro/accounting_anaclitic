@@ -145,6 +145,7 @@ export default ({
       axios.post('/get_my_remonts',{user_id: user._id, token: user.token, auto_id: slug})
         .then((res) => {
           this.$store.categories = res.data['categories'] /// категории ремонтные
+          this.$store.tmp_categories = res.data['tmp_categories'] /// категории ремонтные
           this.remontList = res.data['remonts'] 
         })
         .catch((error) => {
