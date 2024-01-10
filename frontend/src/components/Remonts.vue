@@ -1,7 +1,7 @@
 <template>
   <div class="lk-page">
     <div class="container page">
-        <h1>Remonts</h1>
+        <!-- <h1>Remonts</h1> -->
         <a class="rollback-link" @click="$router.go(-1)"> Назад</a>
           <mcv-validation-errors 
             v-if="validationErrors" 
@@ -35,7 +35,7 @@
           <div v-if="remontList === null && autoList !== null" class="auto_descr">
             <img class="auto_descr-no-data-loader" src="@/assets/img/giphy.gif">
           </div>
-          <div v-else-if="remontList !== null  &&  remontList.length !== 0 && autoList !== null" class="auto_remonts">
+          <div v-else-if="remontList !== null && remontList !== 'error'  &&  remontList.length !== 0 && autoList !== null" class="auto_remonts">
               <h3>Список ремонтов:</h3>
               <div class="item item-title">
                 <div class="item__number">№</div>
@@ -67,8 +67,11 @@
                   </div>
               </div>
           </div>
-          <div v-else-if='autoList !== null'>
+          <div v-else-if="autoList !== null && remontList !== 'error'">
             <h3 v-if="!showAddForm">Ремонтов не нашлось. <a href="" @click.prevent="showForm(true)">Добавить?</a></h3>
+          </div>
+          <div v-else-if="remontList == 'error'">
+            <p>Что-то пошло не так, попробуйте позже...</p>
           </div>
 
 
@@ -150,6 +153,7 @@ export default ({
         })
         .catch((error) => {
           console.error(error)
+          this.remontList = 'error'
         })
     },
     reloadPage(params) {
