@@ -25,27 +25,38 @@ async def get_my_remonts(userData: UserCheck, response: Response):
         tmp_categories = mycursor.fetchall()
         
         key = 0
-        # for row in tmp_categories:
-        #   new_categs[row['_id']] = row
+        ## for row in tmp_categories:
+        ##   new_categs[row['_id']] = row
         
-        # resultTree = copy.deepcopy(new_categs)
-        # # resultTree = createTree(new_categs)
-        # res['categories'] = resultTree
+        ## resultTree = copy.deepcopy(new_categs)
+        ## # resultTree = createTree(new_categs)
+        ## res['categories'] = resultTree
 
-        res['tmp_categories'] = tmp_categories
-        for row in tmp_categories :
-          if (key == 0):
-            key = row['_id']
-          if row['parent_id'] not in new_categs:
-            new_categs[row['parent_id']] = {}
-            new_categs[row['parent_id']][row['_id']] = row
+
+
+        # res['tmp_categories'] = tmp_categories
+        # for row in tmp_categories :
+        #   if (key == 0):
+        #     key = row['_id']
+        #   if row['parent_id'] not in new_categs:
+        #     new_categs[row['parent_id']] = {}
+        #     new_categs[row['parent_id']][row['_id']] = row
+        #   else:
+        #     new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
+        
+        # res['categories'] = new_categs
+        # resultTree = createTree(new_categs, new_categs[key])
+        # res['tree'] = resultTree
+        
+        result = []
+        for row in tmp_categories:
+          if row['parent_id'] == 0:
+            result.append([row['_id'], row['name'], None])
           else:
-            new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
-        
-        res['categories'] = new_categs
-        resultTree = createTree(new_categs, new_categs[key])
-        res['tree'] = resultTree
-        
+            result.append([row['_id'], row['name'], row['parent_id']])
+
+        res['tree'] = createTree(result)
+
 
         mycursor.execute(" SELECT * FROM remonts WHERE _id in (SELECT _id FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s))) ORDER BY start_date desc", (userData.auto_id, userData.user_id)) 
         res['remonts'] = mycursor.fetchall()
@@ -59,19 +70,18 @@ async def get_my_remonts(userData: UserCheck, response: Response):
       connection.close()
       return e
 
-def createTree(listItems, parent):
-  
-  for k, v in parent.items():
-    if (v['parent_id'] in parent.keys()):
-      v['children'] = createTree(listItems, parent[k] )
-    tree[k] = v
-    # if (v['parent_id'] == 0):
-    #   tree[v['_id']] = v
-    # else:
-    #   pass # походу рисовать придется...
-    # for node in v:
-    # if v['_id'] not in 
-  return tree
+def createTree(list_):
+  new_list = []
+  print(list_)
+  for item in list_:
+    if item[2] is None:
+        new_list.append(item)
+    else:
+        new_item = [item[0], item[1]]
+        print([x for x in list_ if x[2] == item[2]])
+        # new_item.append(createTree([x for x in list_ if x[2] == item[2]]))
+        new_list.append(new_item)
+  return new_list
 
 
 @router.post("/delete_my_remont", status_code = 200)
