@@ -16,6 +16,8 @@ router = APIRouter()
 @router.post("/get_my_remonts", status_code = 200)
 async def get_my_remonts(userData: UserCheck, response: Response):
   try:
+    # TODO: короче я отупел походу. Не могу собрать вложение категорий, используя рекурсияю. 
+    # в итоге, пока сделать  на два уровня и просто без этой фишки нарисовать приложуху. Может быть когда-нибудь...
     if (verify_token(userData.token) & (userData.user_id != '') ):
       res = {}
       if (userData.auto_id !=''):
@@ -25,37 +27,26 @@ async def get_my_remonts(userData: UserCheck, response: Response):
         tmp_categories = mycursor.fetchall()
         
         key = 0
-        ## for row in tmp_categories:
-        ##   new_categs[row['_id']] = row
-        
-        ## resultTree = copy.deepcopy(new_categs)
-        ## # resultTree = createTree(new_categs)
-        ## res['categories'] = resultTree
+        for row in tmp_categories:
+          if key == 0 :
+            key = row['_id']
+          new_categs[row['_id']] = row
 
 
 
         # res['tmp_categories'] = tmp_categories
         # for row in tmp_categories :
-        #   if (key == 0):
-        #     key = row['_id']
-        #   if row['parent_id'] not in new_categs:
-        #     new_categs[row['parent_id']] = {}
-        #     new_categs[row['parent_id']][row['_id']] = row
-        #   else:
-        #     new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
+          # if row['parent_id'] not in new_categs:
+          #   new_categs[row['parent_id']] = {}
+          #   new_categs[row['parent_id']][row['_id']] = row
+          # else:
+          #   new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
         
-        # res['categories'] = new_categs
+        res['categories'] = new_categs
         # resultTree = createTree(new_categs, new_categs[key])
         # res['tree'] = resultTree
         
-        result = []
-        for row in tmp_categories:
-          if row['parent_id'] == 0:
-            result.append([row['_id'], row['name'], None])
-          else:
-            result.append([row['_id'], row['name'], row['parent_id']])
-
-        res['tree'] = createTree(result)
+      
 
 
         mycursor.execute(" SELECT * FROM remonts WHERE _id in (SELECT _id FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s))) ORDER BY start_date desc", (userData.auto_id, userData.user_id)) 
@@ -70,18 +61,23 @@ async def get_my_remonts(userData: UserCheck, response: Response):
       connection.close()
       return e
 
-def createTree(list_):
-  new_list = []
-  print(list_)
-  for item in list_:
-    if item[2] is None:
-        new_list.append(item)
-    else:
-        new_item = [item[0], item[1]]
-        print([x for x in list_ if x[2] == item[2]])
-        # new_item.append(createTree([x for x in list_ if x[2] == item[2]]))
-        new_list.append(new_item)
-  return new_list
+def createTree(list_, parent):
+  # не работает, см описание метода get_my_remonts
+  tree = []
+  if parent['parent_id'] in list_.keys():
+    tree.append(createTree(list_, list_[parent['_id']]))
+  tree.append(parent)
+
+
+  # for item in list_:
+  #   if item[2] is None:
+  #       new_list.append(item)
+  #   else:
+  #       new_item = [item[0], item[1]]
+  #       print([x for x in list_ if x[2] == item[2]])
+  #       # new_item.append(createTree([x for x in list_ if x[2] == item[2]]))
+  #       new_list.append(new_item)
+  return tree
 
 
 @router.post("/delete_my_remont", status_code = 200)
