@@ -13,11 +13,11 @@
                 <input type="text" id="remont-name" name="remont-name" v-model="remont_name" required title="Название ремонта не может быть пустым">
               </label>
               <label for="add-remont-parent" >
-                  <p data-tooltip="н-р, замена тормозных колодок относится к ремонту колеса, которая в свою очередь относится к ремонту ходовки и т.д. Смотря что уже было добавлено.">
+                  <!-- <p data-tooltip="н-р, замена тормозных колодок относится к ремонту колеса, которая в свою очередь относится к ремонту ходовки и т.д. Смотря что уже было добавлено.">
                     Есть ли родительский ремонт? <br/>
                     НЕ обязательно<br/>
-                  </p>
-                <div v-html=" remont_category_html " ></div>
+                  </p> -->
+                <div id="category_container"></div>
               </label>
               <label for="add-remont-start_date">
                 Дата начала ремонта:
@@ -76,7 +76,8 @@ export default {
       remont_name: null,
       remont_comment: null,
       remont_category_id: null,
-      remont_category_html: '',
+      remont_category_html_parent: '',
+      remont_category_html_childs: '',
       remont_price: null,
       remont_elapced_time: null,
       start_date: null,
@@ -144,6 +145,7 @@ export default {
       this.showed = '';
     },
     openForEdit(params, resolve) {
+      this.updatedCategories();
       this.showed = 'dialog_open';
       this.name = params['name'];
       this.comment = params['comment'];
@@ -156,6 +158,7 @@ export default {
       this.sResult = null;
     },
     openForAdd() {
+      this.updatedCategories();
       this.showed = 'dialog_open';
       this.name = null;
       this.comment = null;
@@ -165,15 +168,63 @@ export default {
       // this.title = 'Добавление ремонта'; тупо чтоб не светилось
       this.resolver=null
       this.sResult = null;
+    },
+    updatedCategories() {
+      /*
+      - Сделать 2 переменки для родительских и дочерних категорий. В родительской по дефолту первая же вывбирается. И автоматом подгружаются ее дочерние (тут замутить функцию, что обновлять вывод дочерних будет). 
+      - так же добавить кнопки добавления категорий. Лучше отдельной формой, где редактировать и удалять их можно. После закрытия формы послать запрос на обновление категорий в родительской форме
+      
+      */
+      if (this.$store.categories) {
+        // нарисовать  html 
+        this.remont_category_html_parent = `
+          <h5 id="parent_category" data-id=''>Категория ремонта: </h5>
+          <ul class="add-remont-category-list add-remont-category-list_parent">
+        `;
+        let sdopClass = ' selected';
+        for (const [key, item] of Object.entries(this.$store.categories)) {
+          this.remont_category_html_parent += `<li class="add-remont-category-item ` +sdopClass+ `" data-category-id="${key}">${item.name}</li>`;
+          if (sdopClass.length > 0) {
+            sdopClass = '';
+          }
+          if ('children' in item) {
+            this.remont_category_html_childs += `<ul class="add-remont-category-list add-remont-category-list_child" data-parent-id="${key}">`;
+              for (const [keyChild, child] of Object.entries(item.children)) {
+              this.remont_category_html_childs += `<li class="add-remont-category-item add-remont-category-item_child" data-category-id="${keyChild}">${child.name}</li>`;
+            }
+            this.remont_category_html_childs += `</ul>`;
+          }
+        }
+        this.remont_category_html_parent += `</ul>`;
+
+
+        // воткнуть в контейнер и првязать события
+        let category_container = document.getElementById('category_container');
+        category_container.innerHTML = this.remont_category_html_parent + this.remont_category_html_childs;
+
+        document.getElementById('parent_category').dataset.id = document.getElementsByClassName('add-remont-category-item selected')[0].dataset.categoryId;
+        document.getElementById('parent_category').innerHTML = 'Категория ремонта: ' + document.getElementsByClassName('add-remont-category-item selected')[0].innerHTML;
+        let parentItems = document.getElementsByClassName('add-remont-category-item')
+        for (let i = 0; i < parentItems.length; i++) {
+          parentItems[i].addEventListener('click', function(event)  { 
+            let category_id = event.target.dataset.categoryId;
+            let parentNaimer = document.getElementById('parent_category');
+            parentNaimer.dataset.id = category_id;
+            parentNaimer.innerHTML = 'Категория ремонта: ' + event.target.innerHTML;
+            Array.from(parentItems).forEach(function(el) {
+              el.classList.remove('selected');
+            }); 
+            this.classList.add('selected');
+          }, false);
+        }
+
+      }
     }
   },
   mounted() {
-    console.log(this.$store)
     // this.openForEdit()
     // this.title = 'Добавить ремонт';
-    if (this.$store.categories) {
-      this.remont_category_html = this.$store.categories
-    }
+    
   }, 
 }
 

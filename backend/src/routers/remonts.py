@@ -23,24 +23,28 @@ async def get_my_remonts(userData: UserCheck, response: Response):
       if (userData.auto_id !=''):
         connection = MysqlConnect.connectDb()  
         mycursor = connection.cursor(dictionary=True)
-        mycursor.execute("SELECT * FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY level, parent_id ASC", (userData.auto_id, userData.user_id))   
+        # без ограничений, но построить дерево не могу
+        # mycursor.execute("SELECT * FROM categories WHERE _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY level, parent_id ASC", (userData.auto_id, userData.user_id))   
+
+        mycursor.execute("SELECT * FROM categories WHERE level in (0,1) AND _id in ( SELECT category_id FROM auto_cat WHERE auto_id in ( SELECT _id FROM auto WHERE _id = %s AND user_id = %s)) ORDER BY level, parent_id ASC", (userData.auto_id, userData.user_id))   
         tmp_categories = mycursor.fetchall()
         
         key = 0
-        for row in tmp_categories:
-          if key == 0 :
-            key = row['_id']
-          new_categs[row['_id']] = row
+        # for row in tmp_categories:
+        #   if key == 0 :
+        #     key = row['_id']
+        #   new_categs[row['_id']] = row
 
 
 
-        # res['tmp_categories'] = tmp_categories
-        # for row in tmp_categories :
-          # if row['parent_id'] not in new_categs:
-          #   new_categs[row['parent_id']] = {}
-          #   new_categs[row['parent_id']][row['_id']] = row
-          # else:
-          #   new_categs[row['parent_id']][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
+        res['tmp_categories'] = tmp_categories
+        for row in tmp_categories :
+          if row['level'] == 0:
+            new_categs[row['_id']] = row
+          else:
+            if 'children' not in new_categs[row['parent_id']].keys():
+              new_categs[row['parent_id']]['children'] = {}
+            new_categs[row['parent_id']]['children'][row['_id']] = row # Добавление работает, но не вписываются уровень что к чему относится
         
         res['categories'] = new_categs
         # resultTree = createTree(new_categs, new_categs[key])
