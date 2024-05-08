@@ -9,9 +9,19 @@
       margin-left: 2%;
     }
   }
-  #category_container:hover { 
-    .add-remont-category-list_parent {
+  #parent_category {
+    position: relative;
+    &:hover  .add-remont-category-list_parent {
       display: block;
+      top: 25px;
+    }
+  }
+  
+  &-parent {
+    #parent_category {
+      p {
+        text-decoration: underline;
+      }
     }
   }
   &-category { 
@@ -25,6 +35,9 @@
 
       &_child {
         display: none;
+        &.showed { 
+          display: block;
+        }
       } 
     }
     &-item {
