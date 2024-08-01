@@ -16,6 +16,14 @@
       top: 25px;
     }
   }
+
+  #child_category {
+    position: relative;
+    &:hover .add-remont-category-list_child.showed {
+      display: block;
+      top: 25px;
+    }
+  }
   
   &-parent {
     #parent_category {
@@ -35,13 +43,12 @@
 
       &_child {
         display: none;
-        &.showed { 
-          display: block;
-        }
       } 
     }
     &-item {
-      
+      &:hover {
+        text-decoration: underline;
+      }
       &.selected { 
         color: green
       }

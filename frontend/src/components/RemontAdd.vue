@@ -179,25 +179,33 @@ export default {
         // нарисовать  html 
         this.remont_category_html_parent = `
           <div id="parent_category" >
-            <h5 data-id=''>Категория ремонта: </h5>
+            <h5 data-id=''>Категория ремонта: <p> </p></h5>
           <ul class="add-remont-category-list add-remont-category-list_parent">
         `;
         let sdopClass = ' selected';
+        let ii = 0;
         for (const [key, item] of Object.entries(this.$store.categories)) {
           this.remont_category_html_parent += `<li class="add-remont-category-item ` +sdopClass+ `" data-category-id="${key}">${item.name}</li>`;
           if (sdopClass.length > 0) {
             sdopClass = '';
           }
+          
           if ('children' in item) {
-            this.remont_category_html_childs += `<ul class="add-remont-category-list add-remont-category-list_child" data-parent-id="${key}">`;
+            if (ii == 0) {
+              this.remont_category_html_childs += `<ul class="add-remont-category-list add-remont-category-list_child showed" data-parent-id="${key}">`;
+              ii++;
+            } else {
+              this.remont_category_html_childs += `<ul class="add-remont-category-list add-remont-category-list_child" data-parent-id="${key}">`;
+            }
               this.remont_category_html_childs += `<li class="add-remont-category-item add-remont-category-item_child" data-category-id="-1">не выбрано</li>`;
               for (const [keyChild, child] of Object.entries(item.children)) {
                 this.remont_category_html_childs += `<li class="add-remont-category-item add-remont-category-item_child" data-category-id="${keyChild}">${child.name}</li>`;
             }
             this.remont_category_html_childs += `</ul>`;
           }
-          this.remont_category_html_childs += `</div>`; /// for id="child_category"
+          
         }
+        this.remont_category_html_childs += `</div>`; /// for id="child_category"
         this.remont_category_html_parent += `</ul> </div>`;
 
         this.remont_category_html_parent += `<div id="child_category" data-id='-1'>Подкатегория ремонта: <p>не выбрано</p>`;
@@ -210,20 +218,35 @@ export default {
         document.querySelector('#parent_category > h5').dataset.id = document.getElementsByClassName('add-remont-category-item selected')[0].dataset.categoryId;
         document.querySelector('#parent_category > h5').innerHTML = 'Категория ремонта: <p>' + document.getElementsByClassName('add-remont-category-item selected')[0].innerHTML + '</p>';
         let parentItems = document.getElementsByClassName('add-remont-category-item')
+        let categorySelectorLabelid = '#parent_category > h5 > p';
+
         for (let i = 0; i < parentItems.length; i++) {
           parentItems[i].addEventListener('click', function(event)  { 
             let category_id = event.target.dataset.categoryId;
-            let parentNaimer = document.querySelector('#parent_category > h5');
+            if (event.target.classList.value.includes('add-remont-category-item_child')) {
+              // значит тыкнут был вариант из подкатегорий
+              categorySelectorLabelid = '#child_category > p';
+            } else {
+              categorySelectorLabelid = '#parent_category > h5 > p';
+            }
+            
+            let parentNaimer = document.querySelector(categorySelectorLabelid);
             parentNaimer.dataset.id = category_id;
-            parentNaimer.innerHTML = '<h5>Категория ремонта: <p>' + event.target.innerHTML + '</p></h5>';
+            parentNaimer.innerHTML = event.target.innerHTML;
             Array.from(parentItems).forEach(function(el) {
               el.classList.remove('selected');
             }); 
             this.classList.add('selected');
 
             // childs
+            let childs =  document.querySelectorAll('.add-remont-category-list_child');
+            Array.from(childs).forEach((el) => {
+              el.classList.remove('showed');
+            })
+            
             let childItem = document.querySelector('.add-remont-category-list_child[data-parent-id="' + category_id + '"]');
-            if (childItem.class !== undefined) { 
+            
+            if (childItem !== undefined) { 
               childItem.classList.add('showed');
             }
 
